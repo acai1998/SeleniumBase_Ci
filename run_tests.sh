@@ -8,11 +8,11 @@ rm -rf venv reports latest_logs
 # 创建虚拟环境
 python3 -m venv venv
 
-# 安装依赖（使用虚拟环境中的 pip）
+# 安装依赖
 ./venv/bin/pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-# 运行 SeleniumBase 测试（使用虚拟环境中的 python）
-./venv/bin/python -m seleniumbase run test_case/ \
+# 执行 SeleniumBase 测试（注意：直接使用 seleniumbase CLI）
+./venv/bin/seleniumbase run test_case/ \
   --browser=chrome \
   --headless \
   --junit-xml=reports/junit.xml \
