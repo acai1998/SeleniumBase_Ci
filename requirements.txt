@@ -1,3 +1,4 @@
 seleniumbase
 pytest
 pytest-html
+allure-pytest
