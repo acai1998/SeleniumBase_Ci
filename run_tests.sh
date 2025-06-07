@@ -1,12 +1,8 @@
-#!/bin/bash -xe
-
-cd /var/jenkins_home/workspace/SeleniumBase-CI
-
 # 安装依赖
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-# 执行 SeleniumBase 测试（注意：直接使用 seleniumbase CLI）
-pytest test_case/ \
+# 运行测试，输出 HTML 和 JUnit 报告
+python -m seleniumbase run test_case/ \
   --browser=chrome \
   --headless \
   --junit-xml=reports/junit.xml \
