@@ -1,41 +1,22 @@
 #!/bin/bash
+set -e  # 一旦有命令出错就停止脚本
 
-# 设置环境变量（根据实际情况调整）
-export PATH=$PATH:/usr/local/bin
-WORKSPACE="/var/lib/jenkins/workspace/SeleniumBase-CI"
-REPORT_DIR="${WORKSPACE}/reports"
-
-# 创建报告目录
-mkdir -p "${REPORT_DIR}"
-
-# 安装必要依赖（包含pytest）
-echo "=== 安装Python依赖 ==="
+echo "🔧 升级 pip..."
 python -m pip install --upgrade pip
-python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    pytest \
-    pytest-html \
-    seleniumbase \
-    -r requirements.txt
 
-# 检查pytest是否安装成功
-echo "=== 检查pytest版本 ==="
-python -m pytest --version
+echo "📦 安装依赖（requirements.txt）..."
+python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
-# 运行测试
-echo "=== 开始执行测试 ==="
-python -m pytest "${WORKSPACE}/test_case/" \
-    --browser=chrome \
-    --headless \
-    --junitxml="${REPORT_DIR}/junit.xml" \
-    --html="${REPORT_DIR}/report.html"
+echo "🧪 安装 pytest 扩展插件..."
+python -m pip install pytest pytest-html
 
-# 检查测试结果
-TEST_RESULT=$?
-echo "=== 测试执行完成，退出码: ${TEST_RESULT} ==="
+echo "🚀 开始执行测试..."
+python -m pytest test_case/ \
+  --browser=chrome \
+  --dashboard --rs \
+  --headless \
+  --alluredir=allure-results \
+  --junitxml=reports/junit.xml \
+  --html=reports/report.html
 
-# 生成Allure报告（如果配置了Allure）
-echo "=== 生成Allure报告 ==="
-/var/lib/jenkins/tools/ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation/Allure/bin/allure \
-    generate "${WORKSPACE}/temp" -c -o "${REPORT_DIR}/allure-report"
 
-exit $TEST_RESULT
