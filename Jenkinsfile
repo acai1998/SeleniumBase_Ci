@@ -1,125 +1,45 @@
 pipeline {
     agent any
-
-    options {
-        timeout(time: 30, unit: 'MINUTES')
-        buildDiscarder(logRotator(numToKeepStr: '30'))
-    }
-
-    environment {
-        REPORT_DIR = '/var/www/reports'
-        EXTERNAL_URL = 'http://www.wiac.xyz/reports'
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                script {
-                    echo '🔄 清空工作区并拉取代码'
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/master']],
-                        extensions: [
-                            [$class: 'CloneOption', depth: 1, noTags: true, shallow: true, timeout: 30],
-                            [$class: 'GitLFSPull']
-                        ],
-                        userRemoteConfigs: [[
-                            url: 'git@github.com:Aci1998/SeleniumBase-CI.git',
-                            credentialsId: '92de817e-eb61-46f8-83d9-47972d8dce12' // 替换为你的 Jenkins 凭证 ID
-                        ]]
-                    ])
-
-                    echo '🔍 验证 run_tests.sh 是否存在'
-                    sh '''
-                        echo "当前工作区内容："
-                        ls -al ${WORKSPACE}
-                        echo "-----------------"
-                        if [ -f "${WORKSPACE}/run_tests.sh" ]; then
-                            echo "✅ run_tests.sh 存在"
-                        else
-                            echo "❌ 错误：run_tests.sh 不存在"
-                            exit 1
-                        fi
-                    '''
-                }
+                git branch: 'master', url: 'https://gitee.com/Ac1998/SeleniumBase-CI.git'
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Setup') {
             steps {
-                script {
-                    echo '🛠️ 使用 Docker Buildx 构建镜像...'
-
-                    sh '''
-                        echo "检查 buildx 版本:"
-                        docker buildx version || echo "⚠️ buildx 未安装"
-                        docker buildx ls || echo "⚠️ 无法列出 buildx 实例"
-
-                        sh 'docker build -t seleniumbase-test:latest .'
-                    '''
-                }
+                sh 'python -m pip install --upgrade pip'
+                sh 'pip install allure-pytest seleniumbase pytest-html'
+                sh 'cd /var/lib/jenkins/workspace/SeleniumBaseCI'
+                sh 'pwd'
+                sh 'ls'
+                sh 'rm -rf 项目根目录 项目根目录@tmp'
+                sh 'ls -al test_case/'
             }
         }
-
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                script {
-                    echo '🚀 运行测试脚本'
+                dir('项目根目录') {
                     sh '''
-                        chmod +x ${WORKSPACE}/run_tests.sh
-                        ${WORKSPACE}/run_tests.sh
+                    python -m pytest /var/lib/jenkins/workspace/SeleniumBaseCI/test_case/ \
+                      --browser=chrome \
+                      --dashboard --rs \
+                      --headless \
+                      --alluredir=allure-results \
+                      --junitxml=reports/junit.xml \
+                      --html=reports/report.html
                     '''
-                }
-            }
-        }
-
-        stage('Publish Report') {
-            steps {
-                script {
-                    echo '🗂️ 获取时间戳并发布报告'
-                    def timestamp = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim()
-
-                    sh "mkdir -p ${REPORT_DIR}/${timestamp}"
-                    sh "cp ${WORKSPACE}/report.html ${REPORT_DIR}/${timestamp}/report.html || echo '⚠️ 未找到报告文件'"
-
-                    publishHTML(target: [
-                        reportDir: "${REPORT_DIR}/${timestamp}",
-                        reportFiles: 'report.html',
-                        reportName: 'HTML Report'
-                    ])
-
-                    // 暴露变量供 post 块使用
-                    currentBuild.description = "Report Timestamp: ${timestamp}"
-                    currentBuild.displayName = "#${env.BUILD_NUMBER} - ${timestamp}"
-
-                    // 保存为环境变量（供 post 使用）
-                    env.REPORT_TIMESTAMP = timestamp
-
-                    echo "✅ 外部访问链接: ${EXTERNAL_URL}/${timestamp}/report.html"
                 }
             }
         }
     }
-
     post {
         always {
-            script {
-                def buildStatus = currentBuild.currentResult
-                def timestamp = env.REPORT_TIMESTAMP ?: 'unknown'
-
-                echo '📧 发送邮件通知...'
-                emailext(
-                    subject: "测试报告 - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: """
-                        <p>构建号: ${env.BUILD_NUMBER}</p>
-                        <p>状态: ${buildStatus}</p>
-                        <p>Jenkins 报告: <a href="${env.BUILD_URL}HTML_Report/">查看报告</a></p>
-                        <p>外部访问链接: <a href="${EXTERNAL_URL}/${timestamp}/report.html">Nginx 报告链接</a></p>
-                    """,
-                    to: 'imacaiy@outlook.com',
-                    mimeType: 'text/html'
-                )
-            }
+            // 正确归档 allure 和 html 报告（注意路径在项目根目录内）
+            allure includeProperties: false,
+                   jdk: '',
+                   results: [[path: '项目根目录/allure-results']]
+            archiveArtifacts artifacts: '项目根目录/reports/*.html,项目根目录/allure-results/**'
         }
     }
 }
