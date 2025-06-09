@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    environment {
+        REPORT_DIR = 'reports'
+        ALLURE_DIR = 'allure-results'
+        TEST_CASE_DIR = 'test_case'
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -10,36 +15,32 @@ pipeline {
             steps {
                 sh 'python -m pip install --upgrade pip'
                 sh 'pip install allure-pytest seleniumbase pytest-html'
-                sh 'cd /var/lib/jenkins/workspace/SeleniumBaseCI'
-                sh 'pwd'
-                sh 'ls'
+                sh 'pwd && ls'
                 sh 'rm -rf 项目根目录 项目根目录@tmp'
                 sh 'ls -al test_case/'
             }
         }
         stage('Test') {
             steps {
-                dir('项目根目录') {
-                    sh '''
-                    python -m pytest /var/lib/jenkins/workspace/SeleniumBaseCI/test_case/ \
-                      --browser=chrome \
-                      --dashboard --rs \
-                      --headless \
-                      --alluredir=allure-results \
-                      --junitxml=reports/junit.xml \
-                      --html=reports/report.html
-                    '''
-                }
+                // 不再切换目录，统一以 Jenkins 根路径为标准
+                sh """
+                python -m pytest ${TEST_CASE_DIR} \
+                  --browser=chrome \
+                  --dashboard --rs \
+                  --headless \
+                  --alluredir=${ALLURE_DIR} \
+                  --junitxml=${REPORT_DIR}/junit.xml \
+                  --html=${REPORT_DIR}/report.html
+                """
             }
         }
     }
     post {
         always {
-            // 正确归档 allure 和 html 报告（注意路径在项目根目录内）
             allure includeProperties: false,
                    jdk: '',
-                   results: [[path: '项目根目录/allure-results']]
-            archiveArtifacts artifacts: '项目根目录/reports/*.html,项目根目录/allure-results/**'
+                   results: [[path: "${ALLURE_DIR}"]]
+            archiveArtifacts artifacts: "${REPORT_DIR}/*.html,${ALLURE_DIR}/**"
         }
     }
 }
