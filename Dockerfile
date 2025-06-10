@@ -13,7 +13,7 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     rm -rf /var/lib/apt/lists/*
 
 # 设置 ChromeDriver 版本并安装
-ENV CHROMEDRIVER_VERSION 124.0.6367.91
+ENV CHROMEDRIVER_VERSION 109.0.5414.74
 RUN wget -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
