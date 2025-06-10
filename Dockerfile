@@ -1,34 +1,30 @@
-# 使用官方 Python 镜像
 FROM python:3.10-slim
 
-# 安装 Chrome 和相关依赖
-RUN apt-get update && \
-    apt-get install -y wget gnupg unzip xvfb libxi6 libgconf-2-4 default-jdk && \
-    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+# 安装系统依赖（包含 Chrome 和 xvfb）
+RUN apt-get update && apt-get install -y \
+    wget unzip curl gnupg xvfb libnss3 libgconf-2-4 libxi6 libgl1-mesa-glx libglib2.0-0 libgtk-3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装 Chrome 浏览器
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
     echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update && \
-    apt-get install -y google-chrome-stable
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
 
-# 安装 ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+') && \
-    DRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}) && \
-    wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin && \
-    chmod +x /usr/local/bin/chromedriver
+# 设置 ChromeDriver 版本并安装
+ENV CHROMEDRIVER_VERSION 124.0.6367.91
+RUN wget -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
+    unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm /tmp/chromedriver_linux64.zip
 
-# 设置工作目录
+# 安装 Python 包
+COPY requirements.txt .
+RUN pip install -r requirements.txt && \
+    pip install seleniumbase pytest-html allure-pytest pytest-xdist
+
 WORKDIR /app
+COPY . .
 
-# 拷贝文件
-COPY . /app
-
-# 安装 Python 依赖
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt && \
-    pip install allure-pytest seleniumbase pytest-html
-
-# 设置环境变量
-ENV PYTHONUNBUFFERED=1
-
-# 入口命令
-CMD ["bash", "run_tests.sh"]
+ENTRYPOINT ["pytest"]
