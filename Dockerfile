@@ -21,9 +21,9 @@ RUN wget -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapi
 
 # 安装 Python 包
 COPY requirements.txt .
-RUN pip install -r requirements.txt && \
-    pip install seleniumbase pytest-html allure-pytest pytest-xdist
-
+RUN pip install -r requirements.txt --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip install seleniumbase pytest-html allure-pytest pytest-xdist --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    
 WORKDIR /app
 COPY . .
 
