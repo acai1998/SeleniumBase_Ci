@@ -1,5 +1,11 @@
 FROM python:3.10-slim
 
+# 设置 pip 环境变量以提升构建速度和稳定性
+ENV PIP_NO_CACHE_DIR=off \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_PROGRESS_BAR=off
+    
 # 设置工作目录
 WORKDIR /app
 
