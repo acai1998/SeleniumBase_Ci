@@ -4,10 +4,12 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # 使用阿里云的 Debian 源（针对 slim 镜像的修复）
-RUN echo "deb http://mirrors.aliyun.com/debian bookworm main contrib non-free" > /etc/apt/sources.list && \
+RUN rm -f /etc/apt/sources.list.d/* && \
+    echo "deb http://mirrors.aliyun.com/debian bookworm main contrib non-free" > /etc/apt/sources.list && \
     echo "deb http://mirrors.aliyun.com/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list && \
     apt-get clean && apt-get update -y
+
 
 # 安装系统依赖（合并 apt 操作减少层数）
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
