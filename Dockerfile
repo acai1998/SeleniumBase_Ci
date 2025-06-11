@@ -1,5 +1,13 @@
 FROM python:3.10-slim
 
+# 设置工作目录
+WORKDIR /app
+
+# 替换 APT 源为阿里云镜像
+RUN sed -i 's@archive.ubuntu.com@mirrors.aliyun.com@g' /etc/apt/sources.list && \
+    sed -i 's@security.ubuntu.com@mirrors.aliyun.com@g' /etc/apt/sources.list && \
+    apt-get clean && apt-get update
+
 # 安装系统依赖（包含 Chrome 和 xvfb）
 RUN apt-get update && apt-get install -y \
     wget unzip curl gnupg xvfb libnss3 libgconf-2-4 libxi6 libgl1-mesa-glx libglib2.0-0 libgtk-3-0 \
