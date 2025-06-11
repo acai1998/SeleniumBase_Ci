@@ -36,12 +36,14 @@ RUN wget -O /tmp/chrome-linux64.zip "https://registry.npmmirror.com/-/binary/chr
 
 
 # 安装 Python 依赖（清华源）
-COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
     --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    --extra-index-url https://mirrors.aliyun.com/pypi/simple \
     --extra-index-url https://pypi.org/simple && \
     pip install --no-cache-dir seleniumbase pytest-html allure-pytest pytest-xdist \
-    --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    --extra-index-url https://mirrors.aliyun.com/pypi/simple \
+    --extra-index-url https://pypi.org/simple
 
 # 复制代码
 COPY . .
