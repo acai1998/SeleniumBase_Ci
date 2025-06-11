@@ -3,10 +3,12 @@ FROM python:3.10-slim
 # 设置工作目录
 WORKDIR /app
 
-# 替换 APT 源为阿里云镜像
-RUN sed -i 's@archive.ubuntu.com@mirrors.aliyun.com@g' /etc/apt/sources.list && \
-    sed -i 's@security.ubuntu.com@mirrors.aliyun.com@g' /etc/apt/sources.list && \
-    apt-get clean && apt-get update
+# 替换为阿里云的 Debian 镜像源
+RUN echo "deb http://mirrors.aliyun.com/debian/ stable main non-free contrib" > /etc/apt/sources.list && \
+    echo "deb http://mirrors.aliyun.com/debian-security stable-security main contrib" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.aliyun.com/debian/ stable-updates main contrib" >> /etc/apt/sources.list && \
+    apt-get clean && \
+    apt-get update
 
 # 安装系统依赖（包含 Chrome 和 xvfb）
 RUN apt-get update && apt-get install -y \
