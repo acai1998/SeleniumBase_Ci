@@ -26,12 +26,12 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearm
 
 
 # 安装对应版本的 ChromeDriver（125.x）
-ENV CHROMEDRIVER_VERSION 125.0.6422.76
-RUN wget -O /tmp/chromedriver_linux64.zip \
-    "https://registry.npmmirror.com/-/binary/chromedriver/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
-    unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/ && \
+ENV CHROMEDRIVER_VERSION=125.0.6422.76
+RUN wget -O /tmp/chrome-linux64.zip \
+    "https://registry.npmmirror.com/-/binary/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chrome-linux64.zip" && \
+    unzip /tmp/chrome-linux64.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver_linux64.zip
+    rm /tmp/chrome-linux64.zip
 
 # 安装 Python 依赖（清华源）
 COPY requirements.txt .
