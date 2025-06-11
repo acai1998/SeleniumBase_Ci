@@ -34,6 +34,8 @@ RUN wget -O /tmp/chrome-linux64.zip "https://registry.npmmirror.com/-/binary/chr
     chmod +x /usr/bin/google-chrome /usr/bin/chromedriver && \
     rm /tmp/*.zip
 
+# 仅复制依赖文件
+COPY requirements.txt .
 
 # 安装 Python 依赖（清华源）
 RUN pip install --no-cache-dir -r requirements.txt \
