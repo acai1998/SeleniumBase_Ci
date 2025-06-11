@@ -17,21 +17,23 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# 安装最新版 Chrome 浏览器（官方源）
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update -y && \
-    apt-get install -y google-chrome-stable && \
+# 安装所需工具
+RUN apt-get update && apt-get install -y wget unzip gnupg ca-certificates fonts-liberation libnss3 libgconf-2-4 libxi6 libgl1-mesa-glx libglib2.0-0 libgtk-3-0 libx11-xcb1 && \
     rm -rf /var/lib/apt/lists/*
 
+# 指定版本（Chrome 与 Chromedriver 保持一致）
+ENV CHROME_VERSION=125.0.6422.141
 
-# 安装对应版本的 ChromeDriver（125.x）
-ENV CHROMEDRIVER_VERSION=125.0.6422.76
-RUN wget -O /tmp/chrome-linux64.zip \
-    "https://registry.npmmirror.com/-/binary/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chrome-linux64.zip" && \
-    unzip /tmp/chrome-linux64.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chrome-linux64.zip
+# 下载 Chrome 和 Chromedriver
+RUN wget -O /tmp/chrome-linux64.zip "https://registry.npmmirror.com/-/binary/chrome-for-testing/${CHROME_VERSION}/linux64/chrome-linux64.zip" && \
+    wget -O /tmp/chromedriver-linux64.zip "https://registry.npmmirror.com/-/binary/chrome-for-testing/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" && \
+    unzip /tmp/chrome-linux64.zip -d /opt/ && \
+    unzip /tmp/chromedriver-linux64.zip -d /opt/ && \
+    ln -s /opt/chrome-linux64/chrome /usr/bin/google-chrome && \
+    ln -s /opt/chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
+    chmod +x /usr/bin/google-chrome /usr/bin/chromedriver && \
+    rm /tmp/*.zip
+
 
 # 安装 Python 依赖（清华源）
 COPY requirements.txt .
