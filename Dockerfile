@@ -17,11 +17,13 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# 安装最新 Chrome 浏览器（从清华源下载 .deb 包）
-RUN wget -O /tmp/google-chrome.deb https://mirrors.tuna.tsinghua.edu.cn/google/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_125.0.6422.141-1_amd64.deb && \
+# 安装最新版 Chrome 浏览器（官方源）
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update -y && \
-    apt-get install -y /tmp/google-chrome.deb && \
-    rm /tmp/google-chrome.deb
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # 安装对应版本的 ChromeDriver（125.x）
 ENV CHROMEDRIVER_VERSION 125.0.6422.76
