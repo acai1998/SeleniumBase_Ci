@@ -15,6 +15,13 @@ python -m pytest test_case ^
   --alluredir=allure-results ^
   --junitxml=reports\junit.xml ^
   --html=reports\report.html ^
-  -n auto || echo [警告] 测试失败，继续执行后续步骤
+  -n auto
 
+:: 如果测试失败，返回非零退出码
+if %errorlevel% neq 0 (
+    echo [错误] 测试失败，构建将终止
+    exit /b %errorlevel%
+)
+
+echo [成功] 所有测试已通过
 exit /b 0
