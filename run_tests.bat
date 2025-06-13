@@ -15,8 +15,6 @@ python -m pytest test_case ^
   --alluredir=allure-results ^
   --junitxml=reports\junit.xml ^
   --html=reports\report.html ^
-  -n auto
-
 :: 如果测试失败，返回非零退出码
 if %errorlevel% neq 0 (
     echo [错误] 测试失败，构建将终止
