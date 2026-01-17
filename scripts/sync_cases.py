@@ -67,7 +67,7 @@ def parse_test_files(test_dir='test_case'):
                     'type': case_type,
                     'priority': 'P1',
                     'script_path': script_path,
-                    'tags': 'auto-synced,github-actions',
+                    'tags': 'auto-synced,gitee',
                 })
 
         # 解析独立的 test_ 函数（不在类内）
@@ -89,7 +89,7 @@ def parse_test_files(test_dir='test_case'):
                 'type': case_type,
                 'priority': 'P1',
                 'script_path': script_path,
-                'tags': 'auto-synced,github-actions',
+                'tags': 'auto-synced,gitee',
             })
 
     return cases
