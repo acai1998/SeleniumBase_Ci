@@ -1,8 +1,13 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__, "--enable-3d-apis")
 
 
 class ThreeJSTests(BaseCase):
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Switch to Tabs')
     def test_animation(self):
         if self.headless:
             self.open_if_not_url("about:blank")
