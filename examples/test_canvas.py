@@ -1,5 +1,6 @@
 """Use SeleniumBase methods to interact with "canvas" elements."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
@@ -20,6 +21,9 @@ class CanvasTests(BaseCase):
         else:
             return [color["0"], color["1"], color["2"]]
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test canvas click from center with alert handling')
     def test_canvas_click_from_center(self):
         self.open("https://seleniumbase.io/other/canvas")
         self.assert_title_contains("Canvas")
@@ -33,6 +37,9 @@ class CanvasTests(BaseCase):
             # Alerts can freeze Safari if reusing the browser session
             self.driver.quit()
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test canvas click with offset and pixel color verification')
     def test_click_with_offset(self):
         self.open("https://seleniumbase.io/canvas/")
         if self.undetectable:

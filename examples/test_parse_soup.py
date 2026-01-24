@@ -1,5 +1,6 @@
 import re
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
@@ -13,6 +14,9 @@ class SoupParsingTests(BaseCase):
         the_id = soup.find(string=pattern).parent.parent.attrs["id"]
         self.click("#%s" % the_id)
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test beautiful soup parsing automation')
     def test_beautiful_soup_parsing(self):
         if self.headless:
             self.open_if_not_url("about:blank")

@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class CycleTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test cycling through elements with tab and enter keys')
     def test_cycle_elements_with_tab_and_press_enter(self):
         """
         Test pressing the tab key to cycle through elements.

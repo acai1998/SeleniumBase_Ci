@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class MultipleDriversTest(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test multiple drivers functionality')
     def test_multiple_drivers(self):
         if self.browser == "safari":
             self.open_if_not_url("about:blank")

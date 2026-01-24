@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class MyChartMakerClass(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test display pie bar column and line charts')
     def test_display_chart(self):
         self.create_pie_chart(title="Pie Chart")
         self.add_data_point("Passed", 7, color="#95d96f")

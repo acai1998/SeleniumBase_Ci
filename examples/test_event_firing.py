@@ -1,4 +1,5 @@
 """Test EventFiringWebDriver with AbstractEventListener"""
+import pytest
 from selenium.webdriver.support.events import EventFiringWebDriver
 from selenium.webdriver.support.events import AbstractEventListener
 from seleniumbase import BaseCase
@@ -26,6 +27,9 @@ class MyListener(AbstractEventListener):
 
 
 class EventFiringTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test event firing webdriver functionality')
     def test_event_firing_webdriver(self):
         self.driver = EventFiringWebDriver(self.driver, MyListener())
         print("\n* EventFiringWebDriver example *")

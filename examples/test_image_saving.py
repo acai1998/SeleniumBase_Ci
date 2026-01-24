@@ -13,13 +13,16 @@
     Eg: "def test_1_ZZZ" will run before "def test_2_AAA".
 """
 import os
-# import pytest  # For ordering tests globally with @pytest.mark.run()
+import pytest
 from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class ImageTests(BaseCase):
     # @pytest.mark.run(order=1)
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test save element as image file')
     def test_1_save_element_as_image_file(self):
         """Pull an image from a website and save it as a PNG file."""
         self.open("https://xkcd.com/1117/")
@@ -32,6 +35,9 @@ class ImageTests(BaseCase):
         print('\n"%s" was saved!' % file_path)
 
     # @pytest.mark.run(order=2)
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test add text overlay to image')
     def test_2_add_text_overlay_to_image(self):
         """Add a text overlay to an image."""
         self.open("https://xkcd.com/1117/")
@@ -47,6 +53,9 @@ class ImageTests(BaseCase):
         print('\n"%s" was saved!' % file_path)
 
     # @pytest.mark.run(order=3)
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test add text overlay to page section')
     def test_3_add_text_overlay_to_page_section(self):
         """Add a text overlay to a section of a page."""
         self.open("https://xkcd.com/2200/")
@@ -67,6 +76,9 @@ class ImageTests(BaseCase):
         print('\n"%s" was saved!' % file_path)
 
     # @pytest.mark.run(order=4)
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test add text overlay to full page')
     def test_4_add_text_overlay_to_full_page(self):
         """Add a text overlay to a full page."""
         self.open("https://xkcd.com/1922/")

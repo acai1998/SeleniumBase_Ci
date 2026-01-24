@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class ScrapeBingTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test scrape bing search results')
     def test_scrape_bing(self):
         if self._multithreaded:
             self.open_if_not_url("about:blank")

@@ -1,4 +1,5 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
@@ -14,6 +15,9 @@ class SwagLabsTests(BaseCase):
         self.assert_element("div.inventory_list")
         self.assert_element('.inventory_item:contains("Sauce Labs Backpack")')
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test basic Swag Labs functional flow from login to checkout')
     def test_swag_labs_basic_flow(self):
         """This test checks functional flow of the Swag Labs store."""
         self.login_to_swag_labs(username="standard_user")

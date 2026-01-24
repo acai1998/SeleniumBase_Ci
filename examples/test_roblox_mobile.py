@@ -2,6 +2,7 @@
 Example: "pytest test_roblox_mobile.py --mobile"
 """
 from seleniumbase import BaseCase
+import pytest
 
 if __name__ == "__main__":
     from pytest import main
@@ -9,6 +10,9 @@ if __name__ == "__main__":
 
 
 class RobloxTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test roblox mobile site')
     def test_roblox_mobile_site(self):
         if not self.mobile_emulator:
             self.open_if_not_url("about:blank")

@@ -1,9 +1,13 @@
 from selenium import webdriver
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class OverrideDriverTest(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test driver override functionality')
     def get_new_driver(self, *args, **kwargs):
         """This method overrides get_new_driver() from BaseCase."""
         options = webdriver.ChromeOptions()

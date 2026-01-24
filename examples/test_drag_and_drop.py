@@ -1,9 +1,13 @@
 """Test drag_and_drop() on different pages."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class DragAndDropTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test drag and drop functionality')
     def test_drag_and_drop(self):
         self.open("https://seleniumbase.io/other/drag_and_drop")
         self.assert_element_not_visible("#div1 img#drag1")
@@ -11,6 +15,9 @@ class DragAndDropTests(BaseCase):
         self.assert_element("#div1 img#drag1")
         self.sleep(0.8)
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test W3Schools drag and drop functionality')
     def test_w3schools_drag_and_drop(self):
         self.open("https://seleniumbase.io/w3schools/drag_drop")
         self.assert_url_contains("drag_drop")

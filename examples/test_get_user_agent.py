@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class UserAgentTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test get user agent')
     def test_get_user_agent(self):
         self.open("data:,")
         user_agent = self.get_user_agent()

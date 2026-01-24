@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class SelectTestClass(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test select options functionality')
     def test_base(self):
         self.open("https://seleniumbase.io/demo_page")
 

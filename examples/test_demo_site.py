@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class DemoSiteTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test comprehensive demo site with various interactions')
     def test_demo_site(self):
         # Open a web page in the active browser window
         self.open("https://seleniumbase.io/demo_page")

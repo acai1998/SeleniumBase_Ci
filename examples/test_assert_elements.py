@@ -2,10 +2,14 @@
 HTML Presence: assert_elements_present()
 HTML Visibility: assert_elements() <> assert_elements_visible()"""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class ListAssertTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test list of elements assertions')
     def test_assert_list_of_elements(self):
         self.open("https://seleniumbase.io/demo_page")
         self.assert_elements_present("head", "style", "script")

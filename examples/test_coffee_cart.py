@@ -1,9 +1,13 @@
 """Use SeleniumBase to test the Coffee Cart App."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class CoffeeCartTest(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test coffee cart ordering flow')
     def test_coffee_cart(self):
         self.open("https://seleniumbase.io/coffee/")
         self.assert_title("Coffee Cart")

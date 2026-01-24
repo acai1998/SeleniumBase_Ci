@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class MyTestClass(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test xkcd website navigation')
     def test_xkcd(self):
         self.open("https://xkcd.com/353/")
         self.assert_title("xkcd: Python")

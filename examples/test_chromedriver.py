@@ -1,11 +1,15 @@
 """This test is only for Chrome!
 (Verify that your chromedriver is compatible with your version of Chrome.)"""
 import colorama
+import pytest
 from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class ChromedriverTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test chromedriver matches chrome version')
     def test_chromedriver_matches_chrome(self):
         self.open("about:blank")
         if self.browser != "chrome":

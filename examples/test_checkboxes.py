@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class CheckboxTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test checkboxes and radio buttons interaction')
     def test_checkboxes_and_radio_buttons(self):
         self.open("https://seleniumbase.io/w3schools/checkboxes")
         self.click("button#runbtn")

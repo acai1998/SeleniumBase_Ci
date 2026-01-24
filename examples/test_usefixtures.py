@@ -3,6 +3,9 @@ import pytest
 
 @pytest.mark.usefixtures("sb")
 class Test_UseFixtures:
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test usefixtures on class')
     def test_usefixtures_on_class(self):
         if not hasattr(self, "sb"):
             print("This test is for pytest only!")

@@ -2,10 +2,14 @@
 (Technically considered to be obfuscation/unobfuscation.)"""
 from seleniumbase import BaseCase
 from seleniumbase import encryption
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class DecryptionTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test password decryption for login')
     def test_decrypt_password(self):
         self.open("https://www.saucedemo.com")
         self.type("#user-name", "standard_user")

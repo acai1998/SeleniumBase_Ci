@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class CDPNetworkBlockingTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test CDP network blocking for ad domains')
     def test_cdp_network_blocking(self):
         self.open("about:blank")
         if self._reuse_session or not self.is_chromium():

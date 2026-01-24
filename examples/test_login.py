@@ -1,5 +1,6 @@
 """A SeleniumBase test for verifying Login functionality on Swag Labs."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
@@ -11,6 +12,9 @@ class SwagLabsLoginTests(BaseCase):
         self.type("#password", "secret_sauce")
         self.click('input[type="submit"]')
 
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test login and logout functionality on Swag Labs')
     def test_swag_labs_login(self):
         self.login_to_swag_labs()
         self.assert_element("div.inventory_list")

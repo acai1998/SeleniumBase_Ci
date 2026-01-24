@@ -3,10 +3,14 @@
     set_attribute() -> Modifies the attribute of the first matching element.
     set_attributes() -> Modifies the attribute of all matching elements. """
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class HackingTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test hack search by modifying attributes')
     def test_hack_search(self):
         if self.headless:
             self.open_if_not_url("about:blank")

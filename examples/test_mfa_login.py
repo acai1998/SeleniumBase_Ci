@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class TestMFALogin(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test multi-factor authentication login')
     def test_mfa_login(self):
         self.open("https://seleniumbase.io/realworld/login")
         self.type("#username", "demo_user")

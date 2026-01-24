@@ -1,8 +1,12 @@
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class TinyMceTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test tinyMCE editor automation')
     def test_tinymce(self):
         if self.headless:
             self.open_if_not_url("about:blank")

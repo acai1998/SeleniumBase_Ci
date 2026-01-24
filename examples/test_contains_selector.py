@@ -2,10 +2,14 @@
 that gets converted to XPath: '//TAG[contains(., "TEXT")]'
 before it's used by Selenium calls. Also part of jQuery."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class ContainsSelectorTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test contains selector functionality')
     def test_contains_selector(self):
         self.open("https://xkcd.com/2207/")
         self.assert_element('div.box div:contains("Math Work")')

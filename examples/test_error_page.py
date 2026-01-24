@@ -2,10 +2,14 @@
 JavaScript animation to point out page objects that are found.
 If an element isn't visible, the test fails with an exception."""
 from seleniumbase import BaseCase
+import pytest
 BaseCase.main(__name__, __file__)
 
 
 class ErrorPageTests(BaseCase):
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test error page with highlight elements')
     def test_error_page(self):
         self.open("https://seleniumbase.io/error_page/")
         self.highlight('img[alt="500 Error"]')

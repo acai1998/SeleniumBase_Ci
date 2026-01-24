@@ -66,6 +66,9 @@ def sb(request):
             sb._needs_tearDown = False
 
 
+@pytest.mark.owner('caijinwei')
+@pytest.mark.priority('P2')
+@pytest.mark.description('Test override fixture without class')
 def test_override_fixture_no_class(sb):
     sb.open("https://seleniumbase.io/demo_page")
     sb.type("#myTextInput", "This is Automated")
@@ -77,6 +80,9 @@ def test_override_fixture_no_class(sb):
 
 
 class TestOverride:
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test override fixture inside class')
     def test_override_fixture_inside_class(self, sb):
         sb.open("https://seleniumbase.io/demo_page")
         sb.type("#myTextInput", "This is Automated")
