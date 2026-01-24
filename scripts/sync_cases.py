@@ -64,6 +64,58 @@ def calculate_file_hash(file_path):
     except Exception:
         return None
 
+def extract_function_description(content, func_name, search_start=0):
+    """提取函数的描述，优先从 pytest.mark.description 提取，其次从 docstring 提取
+    Args:
+        content: 文件内容
+        func_name: 函数名
+        search_start: 开始搜索的位置
+    Returns:
+        函数的描述，如果没有则返回 None
+    """
+    # 查找函数定义
+    pattern = rf'def\s+{re.escape(func_name)}\s*\([^)]*\)\s*:'
+    match = re.search(pattern, content[search_start:])
+    if not match:
+        return None
+    
+    # 获取函数定义的起始位置
+    func_def_start = search_start + match.start()
+    
+    # 查找函数定义之前的 pytest mark（包括 description）
+    # 回溯查找，最多回溯 500 个字符
+    lookback_start = max(0, func_def_start - 500)
+    lines_before = content[lookback_start:func_def_start]
+    
+    # 查找 @pytest.mark.description('...')
+    desc_pattern = r'@pytest\.mark\.description\s*\(\s*[\'"]([^\'"]+)[\'"]\s*\)'
+    desc_match = re.search(desc_pattern, lines_before)
+    if desc_match:
+        return desc_match.group(1).strip()[:500]
+    
+    # 如果没有找到 pytest.mark.description，提取 docstring
+    func_start = search_start + match.end()
+    
+    # 查找第一个 docstring（单引号或双引号）
+    docstring_pattern = r'''(?:\'\'\'[\s\S]*?\'\'\'|"""[\s\S]*?"""|\'[^\']*\'|"[^"]*")'''
+    docstring_match = re.search(docstring_pattern, content[func_start:], re.MULTILINE | re.DOTALL)
+    
+    if docstring_match:
+        docstring = docstring_match.group(0).strip()
+        # 移除引号
+        if (docstring.startswith("'''") and docstring.endswith("'''")) or \
+           (docstring.startswith('"""') and docstring.endswith('"""')):
+            docstring = docstring[3:-3]
+        elif (docstring.startswith("'") and docstring.endswith("'")) or \
+             (docstring.startswith('"') and docstring.endswith('"')):
+            docstring = docstring[1:-1]
+        
+        # 清理空白
+        docstring = ' '.join(line.strip() for line in docstring.split('\n') if line.strip())
+        return docstring[:500] if docstring else None  # 限制长度
+    
+    return None
+
 def parse_test_files(test_dir=None, modified_files=None):
     """解析所有 Python 测试文件
     Args:
@@ -142,6 +194,10 @@ def parse_test_files(test_dir=None, modified_files=None):
 
                 # 构建 pytest 格式的脚本路径
                 script_path = f'{rel_path}::{class_name}::{method_name}'
+                
+                # 提取方法的描述
+                method_start = class_start + method_match.start()
+                description = extract_function_description(content, method_name, method_start)
 
                 cases.append({
                     'name': f'{class_name}::{method_name}',
@@ -150,6 +206,7 @@ def parse_test_files(test_dir=None, modified_files=None):
                     'priority': 'P1',
                     'script_path': script_path,
                     'tags': 'auto-synced,gitee',
+                    'description': description
                 })
 
         # 解析独立的 test_ 函数（不在类内）
@@ -164,6 +221,10 @@ def parse_test_files(test_dir=None, modified_files=None):
         for func_match in re.finditer(method_pattern, content_no_class):
             func_name = func_match.group(1)
             script_path = f'{rel_path}::{func_name}'
+            
+            # 提取函数的描述
+            func_start = func_match.start()
+            description = extract_function_description(content, func_name, func_start)
 
             cases.append({
                 'name': func_name,
@@ -172,6 +233,7 @@ def parse_test_files(test_dir=None, modified_files=None):
                 'priority': 'P1',
                 'script_path': script_path,
                 'tags': 'auto-synced,gitee',
+                'description': description
             })
 
     return cases
@@ -209,7 +271,8 @@ def case_has_changes(cursor, case, new_commit_hash):
             existing.get('module') == case['module'] and
             existing.get('priority') == case['priority'] and
             existing.get('tags') == case['tags'] and
-            existing.get('type') == case['type']):
+            existing.get('type') == case['type'] and
+            existing.get('description') == case.get('description')):
             return False, existing  # 无变化
     
     return True, existing  # 有变化
@@ -245,14 +308,15 @@ def sync_to_db(cases):
                 # 存在则更新，不存在则插入
                 sql = """
                     INSERT INTO Auto_TestCase
-                        (case_key, name, module, priority, script_path, tags, type, source, enabled, repo_id, last_sync_commit)
+                        (case_key, name, module, priority, script_path, tags, type, source, enabled, repo_id, last_sync_commit, description)
                     VALUES
-                        (%(case_key)s, %(name)s, %(module)s, %(priority)s, %(script_path)s, %(tags)s, %(type)s, 'git', 1, %(repo_id)s, %(commit_hash)s)
+                        (%(case_key)s, %(name)s, %(module)s, %(priority)s, %(script_path)s, %(tags)s, %(type)s, 'git', 1, %(repo_id)s, %(commit_hash)s, %(description)s)
                     ON DUPLICATE KEY UPDATE
                         name = VALUES(name),
                         module = VALUES(module),
                         type = VALUES(type),
                         tags = VALUES(tags),
+                        description = VALUES(description),
                         last_sync_commit = VALUES(last_sync_commit),
                         updated_at = NOW()
                 """
@@ -266,7 +330,8 @@ def sync_to_db(cases):
                         'tags': case['tags'],
                         'type': case['type'],
                         'repo_id': repo_id,
-                        'commit_hash': commit_hash
+                        'commit_hash': commit_hash,
+                        'description': case.get('description')
                     })
                     synced += 1
                 except Exception as e:
