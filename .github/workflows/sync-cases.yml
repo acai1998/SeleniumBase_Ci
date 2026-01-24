@@ -1,42 +1,42 @@
 name: Sync Test Cases
 
 on:
+  # 低频定时同步（每天一次，作为兜底）
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: '0 */6 * * *'  # 每6小时执行一次
+  
+  # 主要触发方式：代码推送
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
     paths:
-      - "examples/**"
-      - "tests/**"
-      - "test_cases/**"
-      - "test_case/**"
-      - "scripts/sync_cases.py"
+      - 'examples/**'
+      - 'tests/**'
+      - 'test_cases/**'
+  
+  # 手动触发
   workflow_dispatch:
-
-env:
-  PYTHON_VERSION: "3.11"
+    inputs:
+      force_sync:
+        description: '强制同步所有用例'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pymysql
+        run: pip install pymysql
 
       - name: Parse and Sync Cases
         env:
@@ -45,8 +45,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          FORCE_SYNC: ${{ github.event.inputs.force_sync }}
+          TRIGGER_TYPE: ${{ github.event_name }}
+          TEST_DIR: examples
         run: python scripts/sync_cases.py
-
-      - name: Notify on failure
-        if: failure()
-        run: echo "Test case sync failed! Check the logs above for details"
