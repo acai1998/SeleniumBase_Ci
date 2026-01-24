@@ -20,7 +20,7 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-def parse_test_files(test_dir='test_case'):
+def parse_test_files(test_dir='examples'):
     """解析所有 Python 测试文件"""
     cases = []
     test_path = Path(test_dir)
@@ -108,7 +108,7 @@ def sync_to_db(cases):
                 # 使用 script_path 作为唯一标识
                 # 存在则更新，不存在则插入
                 sql = """
-                    INSERT INTO test_cases
+                    INSERT INTO exampless
                         (name, module, type, priority, script_path, tags, status)
                     VALUES
                         (%(name)s, %(module)s, %(type)s, %(priority)s, %(script_path)s, %(tags)s, 'active')
