@@ -30,13 +30,13 @@ def get_modified_files(base_branch='origin/master'):
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
             stderr=subprocess.DEVNULL
         ).decode().strip()
-        
+
         # 获取修改的文件列表
         result = subprocess.check_output(
             ['git', 'diff', '--name-only', base_branch, 'HEAD'],
             stderr=subprocess.DEVNULL
         ).decode()
-        
+
         modified_files = []
         for line in result.split('\n'):
             line = line.strip()
@@ -50,7 +50,7 @@ def get_modified_files(base_branch='origin/master'):
                 if file_path.exists():
                     modified_files.append(str(file_path))
                     print(f"Found modified test file: {line}")
-        
+
         return modified_files
     except Exception as e:
         print(f"Warning: Failed to get modified files: {e}")
@@ -150,13 +150,13 @@ def parse_test_files(test_dir=None, modified_files=None):
         modified_files: 只解析这些文件，如果为 None 则解析所有文件
     """
     cases = []
-    
+
     # 如果没有指定目录，从环境变量读取或使用默认值
     if test_dir is None:
         test_dir = os.environ.get('TEST_DIR', 'examples')
-    
+
     test_path = Path(test_dir)
-    
+
     # 如果指定了修改的文件，转换为 Path 对象
     if modified_files is not None:
         file_set = {Path(f) for f in modified_files}
@@ -171,7 +171,6 @@ def parse_test_files(test_dir=None, modified_files=None):
     for py_file in test_path.rglob('test_*.py'):
         # 如果指定了修改的文件，只解析那些文件
         if file_set is not None:
-            # 检查文件是否在修改列表中
             found = False
             py_file_str = str(py_file.resolve())
             py_file_rel = str(py_file)
@@ -179,8 +178,7 @@ def parse_test_files(test_dir=None, modified_files=None):
                 try:
                     modified_str = str(modified_file.resolve())
                     modified_rel = str(modified_file)
-                    # 检查是否匹配（处理绝对路径和相对路径）
-                    if (modified_str == py_file_str or 
+                    if (modified_str == py_file_str or
                         modified_rel == py_file_rel or
                         py_file_str.endswith(modified_str) or
                         py_file_str.endswith(modified_rel)):
@@ -190,7 +188,7 @@ def parse_test_files(test_dir=None, modified_files=None):
                     continue
             if not found:
                 continue
-        
+
         try:
             content = py_file.read_text(encoding='utf-8')
         except Exception as e:
@@ -238,7 +236,6 @@ def parse_test_files(test_dir=None, modified_files=None):
                 })
 
         # 解析独立的 test_ 函数（不在类内）
-        # 首先移除所有类的内容
         content_no_class = re.sub(
             r'class\s+Test\w+\s*(?:\([^)]*\))?\s*:.*?(?=\nclass\s|\Z)',
             '',
@@ -285,21 +282,21 @@ def case_has_changes(cursor, case, new_commit_hash, force_full_scan=False):
     Returns: (has_changes, existing_case)
     """
     case_key = case['script_path']
-    
+
     # 查询现有记录
     cursor.execute(
         "SELECT * FROM Auto_TestCase WHERE case_key = %s",
         (case_key,)
     )
     existing = cursor.fetchone()
-    
+
     if not existing:
         return True, None  # 新用例
-    
+
     # 非强制全量扫描时，commit hash 不同则直接判定有变化（快速路径）
     if not force_full_scan and existing.get('last_sync_commit') != new_commit_hash:
         return True, existing  # commit 有变化
-    
+
     # 比较实际字段内容（无论 commit hash 是否相同）
     if (existing.get('name') == case['name'] and
             existing.get('module') == case['module'] and
@@ -309,7 +306,7 @@ def case_has_changes(cursor, case, new_commit_hash, force_full_scan=False):
             existing.get('type') == case['type'] and
             existing.get('description') == case.get('description')):
         return False, existing  # 字段无变化，跳过
-    
+
     return True, existing  # 字段有变化
 
 def sync_to_db(cases, force_full_scan=False):
@@ -326,20 +323,20 @@ def sync_to_db(cases, force_full_scan=False):
             # 获取当前 commit hash
             commit_hash = get_current_commit_hash()
             print(f"Current commit: {commit_hash[:8] if commit_hash else 'unknown'}")
-            
+
             # repo_id 从环境变量获取，默认为 1
             repo_id = int(os.environ.get('REPO_ID', '1'))
 
             for case in cases:
                 case_key = case['script_path']
-                
+
                 # 检查是否有变化
                 has_changes, existing_case = case_has_changes(cursor, case, commit_hash, force_full_scan=force_full_scan)
-                
+
                 if not has_changes:
                     skipped += 1
                     continue
-                
+
                 # 存在则更新，不存在则插入
                 sql = """
                     INSERT INTO Auto_TestCase
@@ -390,7 +387,7 @@ def main():
     # 检查是否是增量同步（默认为增量同步）
     force_sync = os.environ.get('FORCE_SYNC', 'false').lower() == 'true'
     trigger_type = os.environ.get('TRIGGER_TYPE', 'unknown')
-    
+
     if force_sync or trigger_type == 'schedule':
         # 强制同步或定时任务，扫描所有文件
         # force_full_scan=True：跳过 commit hash 短路，按字段内容判断是否需要更新
@@ -410,7 +407,7 @@ def main():
             print('No modified test files found')
             # 如果没有修改的文件，不进行同步
             return
-    
+
     print(f'Found {len(cases)} test cases to sync')
 
     if cases:

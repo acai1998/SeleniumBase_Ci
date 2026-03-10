@@ -17,5 +17,5 @@ python -m pytest test_case/ \
   --headless \
   --alluredir=allure-results \
   --junitxml=reports/junit.xml \
-  --html=reports/report.html
+  --html=reports/report.html \
   -n auto
