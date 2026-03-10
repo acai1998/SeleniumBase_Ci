@@ -248,8 +248,11 @@ def get_current_commit_hash():
     except Exception:
         return None
 
-def case_has_changes(cursor, case, new_commit_hash):
+def case_has_changes(cursor, case, new_commit_hash, force_full_scan=False):
     """检查用例是否有变化
+    Args:
+        force_full_scan: 为 True 时跳过 commit hash 短路，只做字段内容比较
+                         用于 schedule/force_sync 场景，避免同一 commit 反复跳过
     Returns: (has_changes, existing_case)
     """
     case_key = case['script_path']
@@ -264,20 +267,22 @@ def case_has_changes(cursor, case, new_commit_hash):
     if not existing:
         return True, None  # 新用例
     
-    # 检查 commit hash 是否相同
-    if existing.get('last_sync_commit') == new_commit_hash:
-        # commit hash 相同，检查其他字段是否有变化
-        if (existing.get('name') == case['name'] and
+    # 非强制全量扫描时，commit hash 不同则直接判定有变化（快速路径）
+    if not force_full_scan and existing.get('last_sync_commit') != new_commit_hash:
+        return True, existing  # commit 有变化
+    
+    # 比较实际字段内容（无论 commit hash 是否相同）
+    if (existing.get('name') == case['name'] and
             existing.get('module') == case['module'] and
             existing.get('priority') == case['priority'] and
             existing.get('tags') == case['tags'] and
             existing.get('type') == case['type'] and
             existing.get('description') == case.get('description')):
-            return False, existing  # 无变化
+        return False, existing  # 字段无变化，跳过
     
-    return True, existing  # 有变化
+    return True, existing  # 字段有变化
 
-def sync_to_db(cases):
+def sync_to_db(cases, force_full_scan=False):
     """同步用例到数据库"""
     if not cases:
         print('No cases to sync')
@@ -299,7 +304,7 @@ def sync_to_db(cases):
                 case_key = case['script_path']
                 
                 # 检查是否有变化
-                has_changes, existing_case = case_has_changes(cursor, case, commit_hash)
+                has_changes, existing_case = case_has_changes(cursor, case, commit_hash, force_full_scan=force_full_scan)
                 
                 if not has_changes:
                     skipped += 1
@@ -355,9 +360,13 @@ def main():
     
     if force_sync or trigger_type == 'schedule':
         # 强制同步或定时任务，扫描所有文件
+        # force_full_scan=True：跳过 commit hash 短路，按字段内容判断是否需要更新
+        # 避免同一 commit 多次 schedule 触发时所有用例都被跳过
         print('Force sync enabled or scheduled job, scanning all files...')
         cases = parse_test_files()
+        full_scan = True
     else:
+        full_scan = False
         # 增量同步，只扫描修改的文件
         print('Incremental sync, only scanning modified files...')
         modified_files = get_modified_files()
@@ -372,7 +381,7 @@ def main():
     print(f'Found {len(cases)} test cases to sync')
 
     if cases:
-        sync_to_db(cases)
+        sync_to_db(cases, force_full_scan=full_scan)
     else:
         print('No test cases found to sync')
 
