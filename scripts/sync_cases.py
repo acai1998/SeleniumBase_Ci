@@ -22,21 +22,29 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-def get_modified_files(base_branch='origin/master'):
-    """获取修改的 Python 测试文件"""
+def get_modified_files(default_base_branch='origin/master'):
+    """获取修改的 Python 测试文件
+
+    优先使用 CI 传入的 commit 范围（GIT_BASE_SHA..GIT_HEAD_SHA），
+    否则回退到 default_base_branch..HEAD。
+    """
     try:
-        # 获取当前 branch
-        current_branch = subprocess.check_output(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            stderr=subprocess.DEVNULL
-        ).decode().strip()
-        
-        # 获取修改的文件列表
+        base_ref = os.environ.get('GIT_BASE_SHA')
+        head_ref = os.environ.get('GIT_HEAD_SHA', 'HEAD')
+
+        # 首次 push 时 github.event.before 可能是全 0，无法直接 diff
+        if base_ref and re.fullmatch(r'0+', base_ref):
+            print('Detected zero base SHA, incremental diff is unavailable.')
+            return []
+
+        diff_from = base_ref or default_base_branch
+        print(f'Git diff range: {diff_from}..{head_ref}')
+
         result = subprocess.check_output(
-            ['git', 'diff', '--name-only', base_branch, 'HEAD'],
+            ['git', 'diff', '--name-only', diff_from, head_ref],
             stderr=subprocess.DEVNULL
         ).decode()
-        
+
         modified_files = []
         for line in result.split('\n'):
             line = line.strip()
@@ -50,7 +58,7 @@ def get_modified_files(base_branch='origin/master'):
                 if file_path.exists():
                     modified_files.append(str(file_path))
                     print(f"Found modified test file: {line}")
-        
+
         return modified_files
     except Exception as e:
         print(f"Warning: Failed to get modified files: {e}")
@@ -390,12 +398,11 @@ def main():
     # 检查是否是增量同步（默认为增量同步）
     force_sync = os.environ.get('FORCE_SYNC', 'false').lower() == 'true'
     trigger_type = os.environ.get('TRIGGER_TYPE', 'unknown')
-    
-    if force_sync or trigger_type == 'schedule':
-        # 强制同步或定时任务，扫描所有文件
+
+    if force_sync or trigger_type in ('schedule', 'workflow_dispatch'):
+        # 强制同步、定时任务或手动触发时，扫描所有文件
         # force_full_scan=True：跳过 commit hash 短路，按字段内容判断是否需要更新
-        # 避免同一 commit 多次 schedule 触发时所有用例都被跳过
-        print('Force sync enabled or scheduled job, scanning all files...')
+        print('Force/full sync mode, scanning all files...')
         cases = parse_test_files()
         full_scan = True
     else:
@@ -408,8 +415,13 @@ def main():
             cases = parse_test_files(modified_files=modified_files)
         else:
             print('No modified test files found')
-            # 如果没有修改的文件，不进行同步
-            return
+            # push/re-run 场景下如果 diff 为空，回退全量扫描，避免遗漏
+            if trigger_type == 'push':
+                print('Push trigger fallback: scanning all files...')
+                cases = parse_test_files()
+                full_scan = True
+            else:
+                return
     
     print(f'Found {len(cases)} test cases to sync')
 
