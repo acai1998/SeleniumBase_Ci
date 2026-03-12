@@ -31,3 +31,27 @@ class AngularMaterialPaginatorTests(BaseCase):
         self.assert_exact_text(
             "1 – 10 of 50", ".mat-mdc-paginator-range-label"
         )
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test Angular Material paginator - navigate to last page via arrow buttons')
+    def test_pagination_last_page(self):
+        self.open("https://material.angular.io/components/paginator/examples")
+        self.click_if_visible("button.mat-mdc-button")
+        self.scroll_to("div.mat-mdc-paginator-page-size")
+        # Navigate to last page by clicking next multiple times
+        for i in range(9):
+            self.click('button[aria-label="Next page"]')
+        self.assert_exact_text("46 – 50 of 50", ".mat-mdc-paginator-range-label")
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test Angular Material paginator - verify page size options are available')
+    def test_pagination_page_size_options(self):
+        self.open("https://material.angular.io/components/paginator/examples")
+        self.click_if_visible("button.mat-mdc-button")
+        self.scroll_to("div.mat-mdc-paginator-page-size")
+        # Open page size dropdown and verify options
+        self.click("mat-select > div")
+        self.assert_element("mat-option:nth-of-type(1)")
+        self.assert_element("mat-option:nth-of-type(2)")

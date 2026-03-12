@@ -31,3 +31,24 @@ class AngularJSHomePageTests(BaseCase):
         todos = self.find_visible_elements(todo_selector)
         self.assert_equal(len(todos), 3)
         self.assert_equal(todos[2].text.strip(), "write a protractor test")
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test AngularJS page title and main navigation links are visible')
+    def test_page_title_and_nav(self):
+        self.open("http://www.angularjs.org")
+        self.assert_title_contains("AngularJS")
+        self.assert_element('a[href="http://www.angularjs.org"]')
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test AngularJS todo item can be marked as done via checkbox')
+    def test_todo_mark_done(self):
+        self.open("http://www.angularjs.org")
+        todo_selector = '[ng-repeat="todo in todoList.todos"]'
+        self.wait_for_element(todo_selector)
+        # Mark the first todo as done
+        done_checkbox = 'input[ng-model="todo.done"]'
+        self.assert_false(self.is_selected(done_checkbox))
+        self.click(done_checkbox)
+        self.assert_true(self.is_selected(done_checkbox))
