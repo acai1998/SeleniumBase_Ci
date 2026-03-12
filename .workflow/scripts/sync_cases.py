@@ -48,8 +48,8 @@ def get_modified_files(default_base_branch='origin/master'):
         modified_files = []
         for line in result.split('\n'):
             line = line.strip()
-            # 检查是否是 Python 测试文件
-            if line and line.endswith('.py') and 'test_' in Path(line).name:
+            # 检查是否是 Python 测试文件（支持 test_*.py 和 *_test.py）
+            if line and line.endswith('.py') and (Path(line).name.startswith('test_') or Path(line).name.endswith('_test.py')):
                 # 检查文件是否存在
                 file_path = Path(line)
                 if not file_path.exists():
@@ -176,7 +176,9 @@ def parse_test_files(test_dir=None, modified_files=None):
         print(f"Warning: Test directory '{test_dir}' not found")
         return cases
 
-    for py_file in test_path.rglob('test_*.py'):
+    # 支持 test_*.py 和 *_test.py 两种命名方式
+    test_files = set(test_path.rglob('test_*.py')) | set(test_path.rglob('*_test.py'))
+    for py_file in test_files:
         # 如果指定了修改的文件，只解析那些文件
         if file_set is not None:
             found = False
