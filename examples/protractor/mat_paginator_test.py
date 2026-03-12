@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class AngularMaterialPaginatorTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P0')
-    @pytest.mark.description('Test Angular Material paginator functionality - navigate to the next and previous page')
+    @pytest.mark.owner('wubin')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test Angular Material paginator: navigate next/previous pages and verify page range label')
     def test_pagination(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")
@@ -32,9 +32,9 @@ class AngularMaterialPaginatorTests(BaseCase):
             "1 – 10 of 50", ".mat-mdc-paginator-range-label"
         )
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test Angular Material paginator - navigate to last page via arrow buttons')
+    @pytest.mark.owner('zhouqiang')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test Angular Material paginator: navigate to last page and verify final range label')
     def test_pagination_last_page(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")
@@ -44,9 +44,9 @@ class AngularMaterialPaginatorTests(BaseCase):
             self.click('button[aria-label="Next page"]')
         self.assert_exact_text("46 – 50 of 50", ".mat-mdc-paginator-range-label")
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Angular Material paginator - verify page size options are available')
+    @pytest.mark.owner('zhaoliu')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test Angular Material paginator: dropdown shows available page size options')
     def test_pagination_page_size_options(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")

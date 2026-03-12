@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class ScrapeBingTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test scrape bing search results')
+    @pytest.mark.owner('lisi')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test scraping Bing search results and extracting title and link data')
     def test_scrape_bing(self):
         if self._multithreaded:
             self.open_if_not_url("about:blank")

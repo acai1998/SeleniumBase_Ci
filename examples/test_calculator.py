@@ -1,13 +1,13 @@
 """Test the SeleniumBase Calculator App"""
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class CalculatorTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test calculator: 6 times 7 plus 12 equals 54')
+    @pytest.mark.owner('zhangsan')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test SeleniumBase Calculator App arithmetic: verify 6 * 7 + 12 = 54')
     def test_6_times_7_plus_12_equals_54(self):
         self.open("seleniumbase.io/apps/calculator")
         self.click('button[id="6"]')

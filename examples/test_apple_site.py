@@ -1,12 +1,12 @@
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class AppleTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test Apple developer site with WebDriver instructions')
+    @pytest.mark.owner('sunfang')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test Apple Developer site WebDriver instructions page elements and links')
     def test_apple_developer_site_webdriver_instructions(self):
         if self.headed:
             self.demo_mode = True
@@ -33,7 +33,7 @@ class AppleTests(BaseCase):
         else:
             self.assert_element("div.content h2")
         h3 = "div.content h3:nth-of-type(%s)"
-        self.assert_text("Make Sure You Have Safari's WebDriver", h3 % "1")
+        self.assert_text("Make Sure You Have Safari’s WebDriver", h3 % "1")
         self.assert_text("Get the Correct Selenium Library", h3 % "2")
         self.assert_text("Configure Safari to Enable WebDriver", h3 % "3")
         self.assert_text("Write a WebDriver Testing Suite", h3 % "4")

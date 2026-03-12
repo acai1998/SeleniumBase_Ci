@@ -5,9 +5,12 @@ MasterQA.main(__name__, __file__)
 
 class MasterQATests(MasterQA):
     
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P0')
-    @pytest.mark.description('Test MasterQA functionality - navigate to the next and previous page')
+    @pytest.mark.owner('wangwu')
+        @pytest.mark.priority('P3')
+        @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
+    @pytest.mark.owner('wangwu')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
     def test_masterqa(self):
         self.open("https://seleniumbase.io/devices/")
         self.highlight("div.mockup-wrapper")

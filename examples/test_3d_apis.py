@@ -1,13 +1,12 @@
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__, "--enable-3d-apis")
 
 
 class ThreeJSTests(BaseCase):
-
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Switch to Tabs')
+    @pytest.mark.description('Test Three.js 3D animation rendering with WebGL APIs on Chrome')
     def test_animation(self):
         if self.headless:
             self.open_if_not_url("about:blank")

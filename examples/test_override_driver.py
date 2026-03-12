@@ -25,6 +25,9 @@ class OverrideDriverTest(BaseCase):
         options.add_experimental_option("prefs", prefs)
         return webdriver.Chrome(options=options)
 
+    @pytest.mark.owner('chenmei')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test driver override')
     def test_driver_override(self):
         self.open("https://seleniumbase.io/demo_page")
         self.type("#myTextInput", "This is Automated")

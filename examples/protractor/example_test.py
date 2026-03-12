@@ -6,17 +6,17 @@ BaseCase.main(__name__, __file__)
 
 class AngularJSHomePageTests(BaseCase):
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P0')
-    @pytest.mark.description('Test AngularJS greeting functionality - user types name and sees personalized greeting')
+    @pytest.mark.owner('liuyang')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test AngularJS greeting: user types name and page shows personalized Hello message')
     def test_greet_user(self):
         self.open("http://www.angularjs.org")
         self.type('[ng-model="yourName"]', "Julie")
         self.assert_exact_text("Hello Julie!", "h1.ng-binding")
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test AngularJS todo list functionality - verify existing todos and add new todo item')
+    @pytest.mark.owner('wubin')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test AngularJS todo list: verify initial todos count and add a new todo item')
     def test_todo_list(self):
         self.open("http://www.angularjs.org")
         todo_selector = '[ng-repeat="todo in todoList.todos"]'
@@ -32,17 +32,17 @@ class AngularJSHomePageTests(BaseCase):
         self.assert_equal(len(todos), 3)
         self.assert_equal(todos[2].text.strip(), "write a protractor test")
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test AngularJS page title and main navigation links are visible')
+    @pytest.mark.owner('chenmei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test AngularJS homepage title contains AngularJS and main navigation link is visible')
     def test_page_title_and_nav(self):
         self.open("http://www.angularjs.org")
         self.assert_title_contains("AngularJS")
         self.assert_element('a[href="http://www.angularjs.org"]')
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test AngularJS todo item can be marked as done via checkbox')
+    @pytest.mark.owner('wangwu')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test AngularJS todo item can be marked as done by clicking the checkbox')
     def test_todo_mark_done(self):
         self.open("http://www.angularjs.org")
         todo_selector = '[ng-repeat="todo in todoList.todos"]'

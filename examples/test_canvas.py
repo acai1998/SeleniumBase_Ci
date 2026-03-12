@@ -1,12 +1,12 @@
 """Use SeleniumBase methods to interact with "canvas" elements."""
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class CanvasTests(BaseCase):
-    def get_pixel_colors(self):
-        # Return the RGB colors of the canvas element's top left pixel
+    def get_canvas_pixel_colors_at_top_left(self):
+        # Return the RGB colors of the canvas's top left pixel
         x = 0
         y = 0
         if self.browser == "safari":
@@ -21,9 +21,9 @@ class CanvasTests(BaseCase):
         else:
             return [color["0"], color["1"], color["2"]]
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test canvas click from center with alert handling')
+    @pytest.mark.owner('wangwu')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test clicking HTML5 canvas element from its center point')
     def test_canvas_click_from_center(self):
         self.open("https://seleniumbase.io/other/canvas")
         self.assert_title_contains("Canvas")
@@ -37,9 +37,9 @@ class CanvasTests(BaseCase):
             # Alerts can freeze Safari if reusing the browser session
             self.driver.quit()
 
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test canvas click with offset and pixel color verification')
+    @pytest.mark.owner('liuyang')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test clicking HTML5 canvas element with custom x/y offset coordinates')
     def test_click_with_offset(self):
         self.open("https://seleniumbase.io/canvas/")
         if self.undetectable:
@@ -48,9 +48,9 @@ class CanvasTests(BaseCase):
             self.skip("Skip this test in undetectable mode.")
         self.assert_title_contains("Canvas")
         self.highlight("canvas")
-        rgb = self.get_pixel_colors()
+        rgb = self.get_canvas_pixel_colors_at_top_left()
         self.assert_equal(rgb, [221, 242, 231])  # Looks greenish
         self.click_with_offset("canvas", 500, 350)
         self.highlight("canvas", loops=5)
-        rgb = self.get_pixel_colors()
+        rgb = self.get_canvas_pixel_colors_at_top_left()
         self.assert_equal(rgb, [39, 42, 56])  # Blue by hamburger

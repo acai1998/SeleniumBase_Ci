@@ -7,9 +7,9 @@ BaseCase.main(__name__, __file__)
 
 
 class DecryptionTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test password decryption for login')
+    @pytest.mark.owner('zhaoliu')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test SeleniumBase password decryption utility with encrypted credential string')
     def test_decrypt_password(self):
         self.open("https://www.saucedemo.com")
         self.type("#user-name", "standard_user")

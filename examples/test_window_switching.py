@@ -9,8 +9,8 @@ BaseCase.main(__name__, __file__)
 
 
 class TabSwitchingTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
+    @pytest.mark.owner('wangwu')
+    @pytest.mark.priority('P2')
     @pytest.mark.description('Test switch to tabs')
     def test_switch_to_tabs(self):
         self.open("data:text/html,<h1>Page A</h1>")

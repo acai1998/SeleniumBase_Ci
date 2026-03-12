@@ -5,9 +5,9 @@ MasterQA.main(__name__, __file__)
 
 
 class MasterQATests(MasterQA):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P0')
-    @pytest.mark.description('Test MasterQA functionality - navigate to the next and previous page')
+    @pytest.mark.owner('zhaoliu')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test XKCD comics navigation and MasterQA visual verification across multiple pages')
     def test_xkcd(self):
         self.open("https://xkcd.com/1512/")
         for i in range(4):

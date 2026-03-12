@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class MyChartMakerClass(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test line chart presentation')
+    @pytest.mark.owner('zhouqiang')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test SeleniumBase line chart generation with multiple data points')
     def test_line_chart(self):
         self.create_presentation()
         self.create_line_chart(

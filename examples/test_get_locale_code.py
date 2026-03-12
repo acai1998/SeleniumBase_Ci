@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class LocaleTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test get locale code')
+    @pytest.mark.description('Test retrieving browser locale code and verifying it matches expected value')
     def test_get_locale_code(self):
         self.open("about:blank")
         locale_code = self.get_locale_code()

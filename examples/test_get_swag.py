@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class MyTestClass(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test swag labs checkout flow')
+    @pytest.mark.owner('chenmei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('Test swag labs')
     def test_swag_labs(self):
         self.open("https://www.saucedemo.com")
         self.type("#user-name", "standard_user")

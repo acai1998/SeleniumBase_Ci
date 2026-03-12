@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class DemoSiteTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test comprehensive demo site with various interactions')
+    @pytest.mark.description('Test comprehensive SeleniumBase demo site with text input, dropdowns, buttons, sliders, iframes, checkboxes and drag-drop')
     def test_demo_site(self):
         # Open a web page in the active browser window
         self.open("https://seleniumbase.io/demo_page")

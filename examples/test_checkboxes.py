@@ -1,12 +1,12 @@
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class CheckboxTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test checkboxes and radio buttons interaction')
+    @pytest.mark.owner('zhangsan')
+    @pytest.mark.priority('P2')
+    @pytest.mark.description('Test checkbox selection and radio button interactions on W3Schools examples')
     def test_checkboxes_and_radio_buttons(self):
         self.open("https://seleniumbase.io/w3schools/checkboxes")
         self.click("button#runbtn")

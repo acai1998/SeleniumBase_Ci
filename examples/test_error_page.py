@@ -7,9 +7,9 @@ BaseCase.main(__name__, __file__)
 
 
 class ErrorPageTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test error page with highlight elements')
+    @pytest.mark.owner('wubin')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test error page')
     def test_error_page(self):
         self.open("https://seleniumbase.io/error_page/")
         self.highlight('img[alt="500 Error"]')

@@ -4,8 +4,8 @@ BaseCase.main(__name__, __file__)
 
 
 class NullTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test null placeholder')
+    @pytest.mark.owner('zhouqiang')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test opening a blank page and asserting no elements are present as baseline')
     def test_null(self):
         pass

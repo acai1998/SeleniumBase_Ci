@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class SelectTestClass(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test select options functionality')
+    @pytest.mark.owner('chenmei')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test base')
     def test_base(self):
         self.open("https://seleniumbase.io/demo_page")
 

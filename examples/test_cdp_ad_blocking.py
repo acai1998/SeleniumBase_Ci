@@ -1,35 +1,33 @@
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class CDPNetworkBlockingTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test CDP network blocking for ad domains')
+    @pytest.mark.description('Test CDP network request blocking to prevent ad resources from loading')
     def test_cdp_network_blocking(self):
         self.open("about:blank")
         if self._reuse_session or not self.is_chromium():
             message = "Skipping test if reusing session or not Chromium!"
             print(message)
             self.skip(message)
+        self.execute_cdp_cmd("Network.enable", {})
         self.execute_cdp_cmd(
-            'Network.setBlockedURLs', {"urls": [
-                "*googlesyndication.com*",
-                "*doubleclick.net*",
-                "*adsafeprotected.com*",
-                "*2mdn.net*",
-                "*googletagmanager.com*",
-                "*adsafeprotected.com*",
-                "*snigelweb.com*",
-                "*fastclick.net*",
-                "*amazon-adsystem.com*",
-                "*google-analytics.com*",
+            "Network.setBlockedURLs", {"urls": [
+                "*.googlesyndication.com*",
+                "*.googletagmanager.com*",
+                "*.google-analytics.com*",
+                "*.amazon-adsystem.com*",
+                "*.adsafeprotected.com*",
+                "*.doubleclick.net*",
+                "*.fastclick.net*",
+                "*.snigelweb.com*",
+                "*.2mdn.net*",
             ]})
-        self.execute_cdp_cmd('Network.enable', {})
-        self.open('https://www.w3schools.com/jquery/default.asp')
-        self.ad_block()
+        self.open("https://www.w3schools.com/jquery/default.asp")
         source = self.get_page_source()
-        self.assert_true("doubleclick.net" not in source)
-        self.assert_true("google-analytics.com" not in source)
+        self.assert_false("doubleclick.net" in source)
+        self.assert_false("google-analytics.com" in source)
         self.post_message("Blocking was successful!")

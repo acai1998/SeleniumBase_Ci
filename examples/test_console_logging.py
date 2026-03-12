@@ -1,13 +1,13 @@
 """Use SeleniumBase methods to interact with console logs."""
-from seleniumbase import BaseCase
 import pytest
+from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
 class TestConsoleLogging(BaseCase):
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test console logging and recording')
+    @pytest.mark.description('Test browser console log capture and assert log messages are correctly recorded')
     def test_console_logging(self):
         self.open("https://seleniumbase.io/demo_page")
         self.wait_for_element_visible("h2")

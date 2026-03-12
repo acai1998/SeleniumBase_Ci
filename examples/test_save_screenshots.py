@@ -15,7 +15,7 @@ class ScreenshotTests(BaseCase):
         self.assert_downloaded_file("demo_page.png")
         print('\n"%s/%s" was saved!' % ("downloaded_files", "demo_page.png"))
 
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('wubin')
     @pytest.mark.priority('P1')
     @pytest.mark.description('Test save screenshot to logs')
     def test_save_screenshot_to_logs(self):

@@ -8,9 +8,9 @@ BaseCase.main(__name__, __file__)
 
 class XFailTests(BaseCase):
     @pytest.mark.xfail
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
-    @pytest.mark.description('Test xfail marker')
+    @pytest.mark.owner('lisi')
+    @pytest.mark.priority('P1')
+    @pytest.mark.description('Test pytest xfail marker correctly marks known failing tests as expected failures')
     def test_xfail(self):
         self.open("https://xkcd.com/376/")
         self.sleep(1)  # Time to read the comic

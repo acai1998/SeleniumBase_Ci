@@ -1,9 +1,9 @@
 # Use the pytest "request" fixture to get the "sb" fixture (no class)
 import pytest
 
-@pytest.mark.owner('caijinwei')
-@pytest.mark.priority('P2')
-@pytest.mark.description('Test request sb fixture without class')
+@pytest.mark.owner('wubin')
+@pytest.mark.priority('P0')
+@pytest.mark.description('Test requesting and using SeleniumBase sb fixture in pytest function-style tests')
 def test_request_sb_fixture(request):
     sb = request.getfixturevalue("sb")
     sb.open("https://seleniumbase.io/demo_page")
@@ -17,7 +17,7 @@ def test_request_sb_fixture(request):
 # Use the pytest "request" fixture to get the "sb" fixture (in class)
 class Test_Request_Fixture:
     @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
+    @pytest.mark.priority('P0')
     @pytest.mark.description('Test request sb fixture in class')
     def test_request_sb_fixture_in_class(self, request):
         sb = request.getfixturevalue("sb")

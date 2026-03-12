@@ -10,8 +10,8 @@ if __name__ == "__main__":
 
 
 class RobloxTests(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P2')
+    @pytest.mark.owner('chenmei')
+    @pytest.mark.priority('P0')
     @pytest.mark.description('Test roblox mobile site')
     def test_roblox_mobile_site(self):
         if not self.mobile_emulator:

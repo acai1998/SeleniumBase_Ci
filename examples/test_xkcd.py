@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class MyTestClass(BaseCase):
-    @pytest.mark.owner('caijinwei')
-    @pytest.mark.priority('P1')
-    @pytest.mark.description('Test xkcd website navigation')
+    @pytest.mark.owner('zhaoliu')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test XKCD comics navigation and MasterQA visual verification across multiple pages')
     def test_xkcd(self):
         self.open("https://xkcd.com/353/")
         self.assert_title("xkcd: Python")

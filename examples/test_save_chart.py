@@ -4,9 +4,9 @@ BaseCase.main(__name__, __file__)
 
 
 class MyChartMakerClass(BaseCase):
-    @pytest.mark.owner('caijinwei')
+    @pytest.mark.owner('lisi')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test save pie bar column and line charts')
+    @pytest.mark.description('Test SeleniumBase chart saving to PNG image file')
     def test_save_chart(self):
         self.create_pie_chart(title="Pie Chart")
         self.add_data_point("Passed", 7, color="#95d96f")
