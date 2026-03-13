@@ -310,6 +310,10 @@ def case_has_changes(cursor, case, new_commit_hash, force_full_scan=False):
     if not force_full_scan and existing.get('last_sync_commit') != new_commit_hash:
         return True, existing  # commit 有变化
     
+    # 若用例曾被软删除（enabled=0），强制重新写入以恢复激活
+    if existing.get('enabled') == 0:
+        return True, existing
+
     # 比较实际字段内容（无论 commit hash 是否相同）
     if (existing.get('name') == case['name'] and
             existing.get('module') == case['module'] and
@@ -321,6 +325,35 @@ def case_has_changes(cursor, case, new_commit_hash, force_full_scan=False):
         return False, existing  # 字段无变化，跳过
     
     return True, existing  # 字段有变化
+
+def disable_stale_cases(cursor, current_case_keys, repo_id):
+    """将数据库中存在、但当前代码里已不存在的用例标记为 enabled=0（软删除）
+    仅在全量扫描时调用，避免增量扫描误删仍然存在的用例。
+    """
+    # 查询该 repo 下所有 enabled=1 的用例
+    cursor.execute(
+        "SELECT id, case_key, name FROM Auto_TestCase WHERE repo_id = %s AND enabled = 1",
+        (repo_id,)
+    )
+    db_cases = cursor.fetchall()
+
+    stale = [row for row in db_cases if row['case_key'] not in current_case_keys]
+    if not stale:
+        print('No stale cases found, database is clean.')
+        return 0
+
+    stale_ids = [row['id'] for row in stale]
+    # 批量软删除
+    placeholders = ','.join(['%s'] * len(stale_ids))
+    cursor.execute(
+        f"UPDATE Auto_TestCase SET enabled = 0, updated_at = NOW() WHERE id IN ({placeholders})",
+        stale_ids
+    )
+    print(f'Disabled {len(stale)} stale cases no longer in codebase:')
+    for row in stale:
+        print(f"  - [{row['id']}] {row['case_key']}")
+    return len(stale)
+
 
 def sync_to_db(cases, force_full_scan=False):
     """同步用例到数据库"""
@@ -336,21 +369,21 @@ def sync_to_db(cases, force_full_scan=False):
             # 获取当前 commit hash
             commit_hash = get_current_commit_hash()
             print(f"Current commit: {commit_hash[:8] if commit_hash else 'unknown'}")
-            
+
             # repo_id 从环境变量获取，默认为 1
             repo_id = int(os.environ.get('REPO_ID', '1'))
 
             for case in cases:
                 case_key = case['script_path']
-                
+
                 # 检查是否有变化
                 has_changes, existing_case = case_has_changes(cursor, case, commit_hash, force_full_scan=force_full_scan)
-                
+
                 if not has_changes:
                     skipped += 1
                     continue
-                
-                # 存在则更新，不存在则插入
+
+                # 存在则更新，不存在则插入（同时确保 enabled=1 恢复激活）
                 sql = """
                     INSERT INTO Auto_TestCase
                         (case_key, name, module, priority, owner, script_path, tags, type, source, enabled, repo_id, last_sync_commit, description)
@@ -364,6 +397,7 @@ def sync_to_db(cases, force_full_scan=False):
                         owner = VALUES(owner),
                         tags = VALUES(tags),
                         description = VALUES(description),
+                        enabled = 1,
                         last_sync_commit = VALUES(last_sync_commit),
                         updated_at = NOW()
                 """
@@ -385,8 +419,15 @@ def sync_to_db(cases, force_full_scan=False):
                 except Exception as e:
                     print(f"Error syncing case {case['name']}: {e}")
 
+            # 全量扫描时：将数据库中已不存在于代码里的用例软删除
+            disabled = 0
+            if force_full_scan:
+                current_keys = {c['script_path'] for c in cases}
+                disabled = disable_stale_cases(cursor, current_keys, repo_id)
+
             conn.commit()
-            print(f'Successfully synced {synced}/{len(cases)} cases, skipped {skipped} unchanged cases')
+            print(f'Successfully synced {synced}/{len(cases)} cases, '
+                  f'skipped {skipped} unchanged, disabled {disabled} stale cases')
 
     finally:
         conn.close()
