@@ -52,3 +52,21 @@ class AngularJSHomePageTests(BaseCase):
         self.assert_false(self.is_selected(done_checkbox))
         self.click(done_checkbox)
         self.assert_true(self.is_selected(done_checkbox))
+
+    @pytest.mark.owner('caijinwei')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('测试用例说明')
+    def test_basics(self):
+        self.open("https://www.saucedemo.com")
+        self.type("#user-name", "standard_user")
+        self.type("#password", "secret_sauce\n")
+        self.assert_element("div.inventory_list")
+        self.assert_exact_text("Products", "span.title")
+        self.click('button[name*="backpack"]')
+        self.click("#shopping_cart_container a")
+        self.assert_exact_text("Your Cart", "span.title")
+        self.assert_text("Backpack", "div.cart_item")
+        self.click('button:contains("Remove")')  # HTML innerText
+        self.assert_text_not_visible("Backpack", "div.cart_item")
+        self.js_click("a#logout_sidebar_link")
+        self.assert_element("div#login_button_container")
