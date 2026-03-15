@@ -3,7 +3,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class AppleTests(BaseCase):
+class AppleTest(BaseCase):
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P3')
     @pytest.mark.description('Test Apple Developer site WebDriver instructions page elements and links')

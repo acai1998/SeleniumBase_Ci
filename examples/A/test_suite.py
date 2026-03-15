@@ -4,7 +4,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class MyTestSuite(BaseCase):
+class TestsMyTestSuite(BaseCase):
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P2')
     @pytest.mark.description('Test suite case 1: verify demo page title is correct')

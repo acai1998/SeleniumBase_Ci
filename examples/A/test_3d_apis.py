@@ -3,7 +3,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__, "--enable-3d-apis")
 
 
-class ThreeJSTests(BaseCase):
+class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')

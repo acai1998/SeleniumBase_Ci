@@ -3,7 +3,7 @@ import pytest
 BaseCase.main(__name__, __file__)
 
 
-class SwagLabsTests(BaseCase):
+class SwagLabsTest(BaseCase):
     def login_to_swag_labs(self, username="standard_user"):
         """Login to Swag Labs and verify success."""
         self.open("https://www.saucedemo.com")

@@ -6,7 +6,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class FileUpload(BaseCase):
+class TestsFileUpload(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P3')
     @pytest.mark.description('Test file chooser dialog appears and can be interacted with')

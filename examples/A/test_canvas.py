@@ -4,7 +4,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class CanvasTests(BaseCase):
+class CanvasTest(BaseCase):
     def get_canvas_pixel_colors_at_top_left(self):
         # Return the RGB colors of the canvas's top left pixel
         x = 0

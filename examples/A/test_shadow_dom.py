@@ -8,7 +8,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class ShadowDomTests(BaseCase):
+class ShadowDomTest(BaseCase):
     def download_tar_file_from_pypi(self, package):
         self.open("https://pypi.org/project/%s/#files" % package)
         pkg_header = self.get_text("h1.package-header__name").strip()

@@ -4,7 +4,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class CalculatorTests(BaseCase):
+class CalculatorTest(BaseCase):
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P0')
     @pytest.mark.description('Test SeleniumBase Calculator App arithmetic: verify 6 * 7 + 12 = 54')

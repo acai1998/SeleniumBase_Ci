@@ -3,10 +3,11 @@ import pytest
 BaseCase.main(__name__, __file__)
 
 
-class MyChartMakerClass(BaseCase):
-    @pytest.mark.owner('zhouqiang')
+class TestMyChartMakerClass(BaseCase):
+
+    @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test SeleniumBase area chart creation and rendering with Chart.js')
+    @pytest.mark.description('creation and rendering with Chart.js')
     def test_area_chart(self):
         self.create_presentation(theme="moon")
         self.create_area_chart(

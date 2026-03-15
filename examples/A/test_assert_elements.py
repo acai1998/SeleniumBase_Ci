@@ -6,7 +6,7 @@ from seleniumbase import BaseCase
 BaseCase.main(__name__, __file__)
 
 
-class ListAssertTests(BaseCase):
+class ListAssertTest(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P2')
     @pytest.mark.description('Test SeleniumBase assert_elements API with a list of multiple elements on demo page')
