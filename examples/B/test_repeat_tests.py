@@ -22,18 +22,19 @@ class RepeatTests(BaseCase):
         self.assert_text("Hello", "h2")
 
 
-@pytest.mark.parametrize("", [[]] * 2)
-@pytest.mark.owner('zhouqiang')
-@pytest.mark.priority('P0')
-@pytest.mark.description('验证使用 pytest 参数化重复执行测试')
+    @pytest.mark.parametrize("", [[]] * 2)
+    @pytest.mark.owner('zhouqiang')
+    @pytest.mark.priority('P0')
+    @pytest.mark.description('验证使用 pytest 参数化重复执行测试')
     def test_repeat_this_test_with_pytest_parametrize(sb):
-    sb.open(url)
-    sb.type("input", "SeleniumBase is fun")
-    sb.click('button:contains("OK!")')
-    sb.assert_text("Hello", "h2")
+        sb.open(url)
+        sb.type("input", "SeleniumBase is fun")
+        sb.click('button:contains("OK!")')
+        sb.assert_text("Hello", "h2")
 
 
-class RepeatTestsWithPytest:
+
+
     @pytest.mark.parametrize("", [[]] * 2)
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P2')

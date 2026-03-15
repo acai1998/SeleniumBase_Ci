@@ -17,7 +17,7 @@ class ScreenshotTests(BaseCase):
 
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test save screenshot to logs')
+    @pytest.mark.description('验证页面截图保存到日志功能')
     def test_save_screenshot_to_logs(self):
         self.open("https://seleniumbase.io/demo_page")
         self.save_screenshot_to_logs()

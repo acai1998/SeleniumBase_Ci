@@ -17,7 +17,7 @@ class DragAndDropTests(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test w3schools drag and drop')
+    @pytest.mark.description('验证 W3Schools 拖拽示例的完整流程')
     def test_w3schools_drag_and_drop(self):
         self.open("https://seleniumbase.io/w3schools/drag_drop")
         self.assert_url_contains("drag_drop")

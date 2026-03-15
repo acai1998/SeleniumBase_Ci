@@ -4,6 +4,7 @@ BaseCase.main(__name__, __file__)
 
 
 class ChinesePdfTests(BaseCase):
+    
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
     @pytest.mark.description('Test PDF text extraction correctly handles Chinese character encoding')

@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.owner('wubin')
 @pytest.mark.priority('P0')
 @pytest.mark.description('验证在测试类中请求 SeleniumBase fixture')
-    def test_request_sb_fixture(request):
+def test_request_sb_fixture(request):
     sb = request.getfixturevalue("sb")
     sb.open("https://seleniumbase.io/demo_page")
     sb.assert_text("SeleniumBase", "#myForm h2")
@@ -18,7 +18,7 @@ import pytest
 class Test_Request_Fixture:
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test request sb fixture in class')
+    @pytest.mark.description('验证在测试类中请求 SeleniumBase fixture')
     def test_request_sb_fixture_in_class(self, request):
         sb = request.getfixturevalue("sb")
         sb.open("https://seleniumbase.io/demo_page")

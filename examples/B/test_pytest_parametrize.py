@@ -7,7 +7,7 @@ import pytest
 @pytest.mark.owner('zhouqiang')
 @pytest.mark.priority('P1')
 @pytest.mark.description('验证 SeleniumBase fixture 与 pytest 参数化的结合')
-    def test_sb_fixture_with_no_class(sb, value):
+def test_sb_fixture_with_no_class(sb, value):
     sb.open("seleniumbase.io/help_docs/install/")
     sb.type('input[aria-label="Search"]', value)
     sb.click("nav h1 mark")
