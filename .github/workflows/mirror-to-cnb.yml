@@ -21,5 +21,35 @@ jobs:
         env:
           CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
         run: |
+          echo "========================================"
+          echo "🚀 开始同步代码到 CNB..."
+          echo "📌 触发分支: ${{ github.ref_name }}"
+          echo "📝 触发提交: ${{ github.sha }}"
+          echo "👤 触发人: ${{ github.actor }}"
+          echo "📅 触发时间: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "========================================"
+
+          echo ""
+          echo "➕ 正在添加 CNB 远端仓库..."
           git remote add cnb https://cnb:${CNB_TOKEN}@cnb.cool/ImAcaiy/SeleniumBase-CI.git
-          git push cnb --mirror
+          echo "✅ CNB 远端仓库添加成功: cnb.cool/ImAcaiy/SeleniumBase-CI.git"
+
+          echo ""
+          echo "📦 本次推送包含以下提交:"
+          git log --oneline -5 || echo "  (无法获取提交记录)"
+
+          echo ""
+          echo "⬆️  正在推送所有分支和标签到 CNB..."
+          git push cnb --mirror 2>&1
+          PUSH_STATUS=$?
+
+          echo ""
+          echo "========================================"
+          if [ $PUSH_STATUS -eq 0 ]; then
+            echo "✅ 同步成功！代码已镜像到 CNB"
+            echo "🔗 仓库地址: https://cnb.cool/ImAcaiy/SeleniumBase-CI"
+          else
+            echo "❌ 同步失败！请检查 CNB_TOKEN 是否过期或仓库权限"
+            exit 1
+          fi
+          echo "========================================"
