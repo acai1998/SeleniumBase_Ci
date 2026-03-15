@@ -21,5 +21,5 @@ jobs:
         env:
           CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
         run: |
-          git remote add cnb https://ImAcaiy:${CNB_TOKEN}@cnb.cool/ImAcaiy/SeleniumBase-CI.git
+          git remote add cnb https://cnb:${CNB_TOKEN}@cnb.cool/ImAcaiy/SeleniumBase-CI.git
           git push cnb --mirror
