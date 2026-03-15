@@ -1,0 +1,25 @@
+name: Mirror to CNB
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  # 支持手动触发，用于首次全量同步
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # 必须拉取完整历史，否则 push --mirror 会丢失提交记录
+
+      - name: Push mirror to CNB
+        env:
+          CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+        run: |
+          git remote add cnb https://ImAcaiy:${CNB_TOKEN}@cnb.cool/ImAcaiy/SeleniumBase-CI.git
+          git push cnb --mirror
