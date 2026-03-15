@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class CycleTests(BaseCase):
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test cycle elements with tab and press enter')
+    @pytest.mark.description('验证通过 Tab 键和回车键循环元素操作')
     def test_cycle_elements_with_tab_and_press_enter(self):
         """
         Test pressing the tab key to cycle through elements.

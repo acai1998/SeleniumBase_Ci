@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class DemoSiteTests(BaseCase):
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test comprehensive SeleniumBase demo site with text input, dropdowns, buttons, sliders, iframes, checkboxes and drag-drop')
+    @pytest.mark.description('验证 SeleniumBase 演示网站的完整功能：文本输入、下拉菜单、按钮、滑块、iframe、复选框和拖拽')
     def test_demo_site(self):
         # Open a web page in the active browser window
         self.open("https://seleniumbase.io/demo_page")

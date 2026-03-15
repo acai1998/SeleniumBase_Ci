@@ -12,7 +12,7 @@ if __name__ == "__main__":
 class RobloxTests(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test roblox mobile site')
+    @pytest.mark.description('验证 Roblox 手机网站功能')
     def test_roblox_mobile_site(self):
         if not self.mobile_emulator:
             self.open_if_not_url("about:blank")

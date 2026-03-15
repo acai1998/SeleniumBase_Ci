@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class PdfAssertTests(BaseCase):
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test PDF content assertions: verify expected text is present in downloaded PDF')
+    @pytest.mark.description('验证 PDF 内容断言：确认下载 PDF 中包含预期文本')
     def test_assert_pdf_text(self):
         self.open("data:,")
         # Assert PDF contains the expected text on Page 1

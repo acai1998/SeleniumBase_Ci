@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class CDPNetworkBlockingTests(BaseCase):
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test CDP network request blocking to prevent ad resources from loading')
+    @pytest.mark.description('验证 CDP 网络请求拦截阻止广告资源加载')
     def test_cdp_network_blocking(self):
         self.open("about:blank")
         if self._reuse_session or not self.is_chromium():

@@ -38,7 +38,7 @@ class RepeatTests(BaseCase):
     @pytest.mark.parametrize("", [[]] * 2)
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test repeat with pyparametrize')
+    @pytest.mark.description('验证使用 pytest 参数化重复执行测试')
     def test_repeat_test_with_pytest_parametrize(self, sb):
         sb.open(url)
         sb.type("input", "SeleniumBase is fun")

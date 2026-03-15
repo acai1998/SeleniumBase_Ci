@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class ChromedriverTests(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test that mismatched ChromeDriver and Chrome versions are detected and reported')
+    @pytest.mark.description('验证 ChromeDriver 与 Chrome 版本不匹配时的检测和报告')
     def test_fail_if_versions_dont_match(self):
         self.open("about:blank")
         if self.browser != "chrome":

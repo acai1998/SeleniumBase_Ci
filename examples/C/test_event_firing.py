@@ -29,7 +29,7 @@ class MyListener(AbstractEventListener):
 class EventFiringTests(BaseCase):
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Selenium EventFiringWebDriver listener captures browser events correctly')
+    @pytest.mark.description('验证 Selenium 事件监听器正确捕获浏览器事件')
     def test_event_firing_webdriver(self):
         self.driver = EventFiringWebDriver(self.driver, MyListener())
         print("\n* EventFiringWebDriver example *")

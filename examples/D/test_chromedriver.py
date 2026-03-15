@@ -9,7 +9,7 @@ BaseCase.main(__name__, __file__)
 class ChromedriverTests(BaseCase):
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test ChromeDriver version matches installed Chrome browser version')
+    @pytest.mark.description('验证 ChromeDriver 版本与已安装 Chrome 浏览器版本匹配')
     def test_chromedriver_matches_chrome(self):
         self.open("about:blank")
         if self.browser != "chrome":

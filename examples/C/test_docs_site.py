@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class DocsSiteTests(BaseCase):
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test SeleniumBase documentation site loads correctly and key content is visible')
+    @pytest.mark.description('验证 SeleniumBase 文档网站正确加载和内容可见')
     def test_docs(self):
         self.open("https://seleniumbase.io/help_docs/customizing_test_runs/")
         self.assert_text("Command Line Options", "h1")

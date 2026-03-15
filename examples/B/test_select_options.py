@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class SelectTestClass(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test base')
+    @pytest.mark.description('验证下拉选择框功能')
     def test_base(self):
         self.open("https://seleniumbase.io/demo_page")
 

@@ -7,7 +7,7 @@ MasterQA.main(__name__, __file__)
 class MasterQATests(MasterQA):
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test XKCD comics navigation and MasterQA visual verification across multiple pages')
+    @pytest.mark.description('验证 XKCD 漫画导航和 MasterQA 视觉验证')
     def test_xkcd(self):
         self.open("https://xkcd.com/1512/")
         for i in range(4):

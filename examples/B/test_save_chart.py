@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyChartMakerClass(BaseCase):
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test SeleniumBase chart saving to PNG image file')
+    @pytest.mark.description('验证 SeleniumBase 图表保存为 PNG 图片文件')
     def test_save_chart(self):
         self.create_pie_chart(title="Pie Chart")
         self.add_data_point("Passed", 7, color="#95d96f")

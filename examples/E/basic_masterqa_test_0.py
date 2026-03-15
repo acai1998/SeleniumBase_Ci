@@ -7,10 +7,7 @@ class MasterQATests(MasterQA):
     
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
-    @pytest.mark.owner('wangwu')
-    @pytest.mark.priority('P3')
-    @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
+    @pytest.mark.description('验证 MasterQA 手动验证流程：页面导航和视觉问题确认')
     def test_masterqa(self):
         self.open("https://seleniumbase.io/devices/")
         self.highlight("div.mockup-wrapper")

@@ -7,7 +7,7 @@ class ChinesePdfTests(BaseCase):
     
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test PDF text extraction correctly handles Chinese character encoding')
+    @pytest.mark.description('验证 PDF 文本提取正确处理中文字符编码')
     def test_chinese_pdf(self):
         self.open("data:,")
         pdf = "https://seleniumbase.io/cdn/pdf/unittest_zh.pdf"

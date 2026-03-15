@@ -33,7 +33,7 @@ class DownloadImages(BaseCase):
 
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test capturing and saving images via element screenshot method')
+    @pytest.mark.description('验证通过元素截图保存图片')
     def test_download_images_via_screenshot(self):
         if self.recorder_mode:
             self.open("about:blank")

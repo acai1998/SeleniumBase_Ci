@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyChartMakerClass(BaseCase):
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test SeleniumBase chart display with Chart.js rendered bar chart')
+    @pytest.mark.description('验证 SeleniumBase 使用 Chart.js 渲染条形图显示')
     def test_display_chart(self):
         self.create_pie_chart(title="Pie Chart")
         self.add_data_point("Passed", 7, color="#95d96f")

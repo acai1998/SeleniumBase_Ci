@@ -7,7 +7,7 @@ class CheckboxTests(BaseCase):
     
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test checkbox selection and radio button interactions on W3Schools examples')
+    @pytest.mark.description('验证 W3Schools 示例页面的复选框和单选按钮交互')
     def test_checkboxes_and_radio_buttons(self):
         self.open("https://seleniumbase.io/w3schools/checkboxes")
         self.click("button#runbtn")

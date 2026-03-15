@@ -16,7 +16,7 @@ class SoupParsingTests(BaseCase):
 
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test beautiful soup parsing')
+    @pytest.mark.description('验证 BeautifulSoup HTML 解析功能')
     def test_beautiful_soup_parsing(self):
         if self.headless:
             self.open_if_not_url("about:blank")
