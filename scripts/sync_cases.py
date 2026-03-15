@@ -283,7 +283,19 @@ def parse_test_files(test_dir=None, modified_files=None):
                 'description': meta['description'],
             })
 
-    return cases
+    # ---- 去重：同一 script_path 只保留第一次解析到的记录 ----
+    seen_keys = {}
+    deduped = []
+    for case in cases:
+        key = case['script_path']
+        if key in seen_keys:
+            print(f"[WARN] 跳过重复用例: {key}  (已在 {seen_keys[key]} 中解析过)")
+        else:
+            seen_keys[key] = case.get('module') or '顶层函数'
+            deduped.append(case)
+    if len(deduped) < len(cases):
+        print(f"[INFO] 去重完成: 原始 {len(cases)} 条 → 去重后 {len(deduped)} 条")
+    return deduped
 
 def get_current_commit_hash():
     """获取当前 commit hash"""
