@@ -3,8 +3,8 @@ import pytest
 
 @pytest.mark.owner('wubin')
 @pytest.mark.priority('P0')
-@pytest.mark.description('Test requesting and using SeleniumBase sb fixture in pytest function-style tests')
-def test_request_sb_fixture(request):
+@pytest.mark.description('验证在测试类中请求 SeleniumBase fixture')
+    def test_request_sb_fixture(request):
     sb = request.getfixturevalue("sb")
     sb.open("https://seleniumbase.io/demo_page")
     sb.assert_text("SeleniumBase", "#myForm h2")

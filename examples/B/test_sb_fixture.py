@@ -6,8 +6,8 @@ BaseCase.main(__name__, __file__)
 # "sb" pytest fixture test in a method with no class
 @pytest.mark.owner('zhouqiang')
 @pytest.mark.priority('P1')
-@pytest.mark.description('Test SeleniumBase sb fixture with pytest parametrize in a standalone function')
-def test_sb_fixture_with_no_class(sb: BaseCase):
+@pytest.mark.description('验证顶层函数使用 SeleniumBase fixture 与参数化')
+    def test_sb_fixture_with_no_class(sb: BaseCase):
     sb.open("seleniumbase.io/help_docs/install/")
     sb.type('input[aria-label="Search"]', "GUI Commander")
     sb.click('mark:contains("Commander")')

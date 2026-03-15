@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class ScreenshotTests(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test save screenshot')
+    @pytest.mark.description('验证页面截图保存到日志功能')
     def test_save_screenshot(self):
         self.open("https://seleniumbase.io/demo_page")
         # "./downloaded_files" is a special SeleniumBase folder for downloads

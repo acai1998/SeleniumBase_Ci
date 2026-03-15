@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class DoubleClickTests(BaseCase):
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test switch to frame and double click')
+    @pytest.mark.description('验证切换到 Frame 并执行双击操作')
     def test_switch_to_frame_and_double_click(self):
         self.open("https://seleniumbase.io/w3schools/double_click")
         self.assert_title("Double Click Testing")

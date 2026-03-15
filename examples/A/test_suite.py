@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class TestsMyTestSuite(BaseCase):
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test suite case 1: verify demo page title is correct')
+    @pytest.mark.description('验证套件用例 1：验证演示页面标题正确')
     def test_1(self):
         self.open("https://xkcd.com/1722/")
         self.assert_text("Debugging", "div#ctitle", timeout=4)
@@ -18,7 +18,7 @@ class TestsMyTestSuite(BaseCase):
     @pytest.mark.expected_failure
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test suite case 2: verify demo page text input interaction')
+    @pytest.mark.description('验证套件用例 2：验证演示页面文本输入交互')
     def test_2(self):
         print("\n(This test should fail)")
         self.open("https://xkcd.com/1373/")
@@ -26,7 +26,7 @@ class TestsMyTestSuite(BaseCase):
 
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test suite case 3: verify demo page button click behavior')
+    @pytest.mark.description('验证套件用例 3：验证演示页面元素可见性状态')
     def test_3(self):
         self.open("https://xkcd.com/2224/")
         self.assert_text("Software Updates", "div#ctitle", timeout=4)

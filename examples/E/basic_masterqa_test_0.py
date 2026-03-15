@@ -6,8 +6,8 @@ MasterQA.main(__name__, __file__)
 class MasterQATests(MasterQA):
     
     @pytest.mark.owner('wangwu')
-        @pytest.mark.priority('P3')
-        @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
+    @pytest.mark.priority('P3')
+    @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P3')
     @pytest.mark.description('Test MasterQA manual verification flow: navigate pages and confirm visual questions')

@@ -8,7 +8,7 @@ BaseCase.main(__name__, __file__)
 class DownloadImages(BaseCase):
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test downloading images directly from URL and verifying file exists')
+    @pytest.mark.description('验证通过元素截图保存图片')
     def test_download_images_directly(self):
         if self._multithreaded:
             self.open_if_not_url("about:blank")

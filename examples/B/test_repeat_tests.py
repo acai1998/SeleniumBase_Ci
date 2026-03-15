@@ -14,7 +14,7 @@ class RepeatTests(BaseCase):
     @parameterized.expand([[]] * 2)
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test repeat this with parameterized')
+    @pytest.mark.description('验证使用参数化重复执行同一测试')
     def test_repeat_this_test_with_parameterized(self):
         self.open(url)
         self.type("input", "SeleniumBase is fun")
@@ -25,8 +25,8 @@ class RepeatTests(BaseCase):
 @pytest.mark.parametrize("", [[]] * 2)
 @pytest.mark.owner('zhouqiang')
 @pytest.mark.priority('P0')
-@pytest.mark.description('Test repeat this with pyparametrize')
-def test_repeat_this_test_with_pytest_parametrize(sb):
+@pytest.mark.description('验证使用 pytest 参数化重复执行测试')
+    def test_repeat_this_test_with_pytest_parametrize(sb):
     sb.open(url)
     sb.type("input", "SeleniumBase is fun")
     sb.click('button:contains("OK!")')

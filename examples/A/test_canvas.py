@@ -23,7 +23,7 @@ class CanvasTest(BaseCase):
 
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test clicking HTML5 canvas element from its center point')
+    @pytest.mark.description('验证 Canvas 画布元素的自定义偏移坐标点击')
     def test_canvas_click_from_center(self):
         self.open("https://seleniumbase.io/other/canvas")
         self.assert_title_contains("Canvas")

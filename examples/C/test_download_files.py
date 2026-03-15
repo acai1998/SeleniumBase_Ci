@@ -8,7 +8,7 @@ BaseCase.main(__name__, __file__)
 class DownloadTests(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test downloading ChromeDriver release notes file via browser')
+    @pytest.mark.description('验证从 PyPI 下载 Python 包文件')
     def test_download_chromedriver_notes(self):
         if self._multithreaded:
             self.open_if_not_url("about:blank")
