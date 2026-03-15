@@ -248,13 +248,21 @@ def parse_test_files(test_dir=None, modified_files=None):
                 })
 
         # 解析独立的 test_ 函数（不在类内）
-        # 首先移除所有类的内容
-        content_no_class = re.sub(
-            r'class\s+Test\w+\s*(?:\([^)]*\))?\s*:.*?(?=\nclass\s|\Z)',
-            '',
-            content,
-            flags=re.DOTALL
-        )
+        # 移除所有类定义块（包括非 Test 开头的类，如 MyTestSuite、BaseCase 子类等）
+        # 策略：将文件按行过滤，只保留缩进为 0 的内容（顶层代码），类体均为缩进代码
+        top_level_lines = []
+        inside_class = False
+        for line in content.split('\n'):
+            # 检测到顶层 class 定义，标记进入类块
+            if re.match(r'^class\s+\w+', line):
+                inside_class = True
+                continue
+            # 顶层非空非注释行且无缩进，说明退出了类块
+            if inside_class and line and not line[0].isspace() and not line.startswith('#'):
+                inside_class = False
+            if not inside_class:
+                top_level_lines.append(line)
+        content_no_class = '\n'.join(top_level_lines)
 
         for func_match in re.finditer(method_pattern, content_no_class):
             func_name = func_match.group(1)
