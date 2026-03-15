@@ -81,7 +81,7 @@ for path, count, cls, fn in file_stats:
 (BaseCase):
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test tinymce')
+    @pytest.mark.description('验证 TinyMCE 富文本编辑器的功能')
     def test_tinymce(self):
         if self.headless:
             self.open_if_not_url("about:blank")

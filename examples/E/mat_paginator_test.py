@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class AngularMaterialPaginatorTests(BaseCase):
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Angular Material paginator: navigate next/previous pages and verify page range label')
+    @pytest.mark.description('验证分页器基础功能')
     def test_pagination(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")
@@ -34,7 +34,7 @@ class AngularMaterialPaginatorTests(BaseCase):
 
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Angular Material paginator: navigate to last page and verify final range label')
+    @pytest.mark.description('验证分页器跳转到最后一页')
     def test_pagination_last_page(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")
@@ -46,7 +46,7 @@ class AngularMaterialPaginatorTests(BaseCase):
 
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test Angular Material paginator: dropdown shows available page size options')
+    @pytest.mark.description('验证分页器页面大小选项切换')
     def test_pagination_page_size_options(self):
         self.open("https://material.angular.io/components/paginator/examples")
         self.click_if_visible("button.mat-mdc-button")

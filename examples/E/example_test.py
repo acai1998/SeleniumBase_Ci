@@ -8,7 +8,7 @@ class AngularJSHomePageTests(BaseCase):
 
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test AngularJS greeting: user types name and page shows personalized Hello message')
+    @pytest.mark.description('验证页面问候用户功能')
     def test_greet_user(self):
         self.open("http://www.angularjs.org")
         self.type('[ng-model="yourName"]', "Julie")
@@ -16,7 +16,7 @@ class AngularJSHomePageTests(BaseCase):
 
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test AngularJS todo list: verify initial todos count and add a new todo item')
+    @pytest.mark.description('验证待办事项列表的完整功能')
     def test_todo_list(self):
         self.open("http://www.angularjs.org")
         todo_selector = '[ng-repeat="todo in todoList.todos"]'
@@ -34,7 +34,7 @@ class AngularJSHomePageTests(BaseCase):
 
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test AngularJS homepage title contains AngularJS and main navigation link is visible')
+    @pytest.mark.description('验证页面标题和导航功能')
     def test_page_title_and_nav(self):
         self.open("http://www.angularjs.org")
         self.assert_title_contains("AngularJS")
@@ -42,7 +42,7 @@ class AngularJSHomePageTests(BaseCase):
 
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test AngularJS todo item can be marked as done by clicking the checkbox')
+    @pytest.mark.description('验证标记待办事项为完成的功能')
     def test_todo_mark_done(self):
         self.open("http://www.angularjs.org")
         todo_selector = '[ng-repeat="todo in todoList.todos"]'
@@ -55,7 +55,7 @@ class AngularJSHomePageTests(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('测试用例说明')
+    @pytest.mark.description('验证页面基础交互功能')
     def test_basics(self):
         self.open("https://www.saucedemo.com")
         self.type("#user-name", "standard_user")

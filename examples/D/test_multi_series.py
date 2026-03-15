@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyChartMakerClass(BaseCase):
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test SeleniumBase multi-series chart with several datasets rendered together')
+    @pytest.mark.description('验证多系列数据图表的渲染')
     def test_multi_series(self):
         self.create_presentation(theme="league")
 

@@ -7,7 +7,7 @@ class TestMyChartMakerClass(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('creation and rendering with Chart.js')
+    @pytest.mark.description('验证面积图表的渲染和交互功能')
     def test_area_chart(self):
         self.create_presentation(theme="moon")
         self.create_area_chart(

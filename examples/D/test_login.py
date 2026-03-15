@@ -14,7 +14,7 @@ class SwagLabsLoginTests(BaseCase):
 
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test Swag Labs login and logout functionality with standard user credentials')
+    @pytest.mark.description('验证 Swag Labs 网站登录功能')
     def test_swag_labs_login(self):
         self.login_to_swag_labs()
         self.assert_element("div.inventory_list")

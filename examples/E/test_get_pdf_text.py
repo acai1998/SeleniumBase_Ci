@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class PdfTests(BaseCase):
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test extracting and asserting text content from a remote PDF document')
+    @pytest.mark.description('验证提取 PDF 文本内容的功能')
     def test_get_pdf_text(self):
         self.open("data:,")
         pdf = (

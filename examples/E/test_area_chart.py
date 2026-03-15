@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyChartMakerClass(BaseCase):
     @pytest.mark.owner('Lisi')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test area chart creation and presentation')
+    @pytest.mark.description('验证面积图表的渲染和交互功能')
     def test_area_chart(self):
         self.create_presentation(theme="moon")
         self.create_area_chart(

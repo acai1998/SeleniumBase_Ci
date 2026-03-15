@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class UserAgentTests(BaseCase):
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test retrieving browser User-Agent string and verifying it is not empty')
+    @pytest.mark.description('验证获取浏览器 User-Agent 字符串')
     def test_get_user_agent(self):
         self.open("data:,")
         user_agent = self.get_user_agent()

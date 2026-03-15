@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class TestMFALogin(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test multi-factor authentication login flow with TOTP code generation')
+    @pytest.mark.description('验证多因素认证（MFA）登录流程')
     def test_mfa_login(self):
         self.open("https://seleniumbase.io/realworld/login")
         self.type("#username", "demo_user")

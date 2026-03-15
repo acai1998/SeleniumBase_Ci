@@ -7,7 +7,7 @@ class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test Three.js 3D animation rendering with WebGL APIs on Chrome')
+    @pytest.mark.description('验证 Three.js 3D 动画在 WebGL 上的渲染效果')
     def test_animation(self):
         if self.headless:
             self.open_if_not_url("about:blank")
@@ -23,7 +23,7 @@ class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('测试用例说明')
+    @pytest.mark.description('验证导航链接跳转到咖啡购物页面')
     def test_1_verify_nav_link_to_coffee_cart(self):
         self.open("https://seleniumbase.io/help_docs/customizing_test_runs/")
         self.js_click('nav a:contains("Coffee Cart")')
@@ -32,7 +32,7 @@ class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('测试用例说明')
+    @pytest.mark.description('验证购买单个卡布奇诺咖啡的完整流程')
     def test_buy_one_cappuccino(self):
         self.open("https://seleniumbase.io/coffee/")
         self.assert_title("Coffee Cart")
@@ -87,7 +87,7 @@ class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('测试用例说明')
+    @pytest.mark.description('验证右键菜单能正确添加咖啡到购物车')
     def test_context_click_add_coffee(self):
         self.open("https://seleniumbase.io/coffee/")
         self.assert_title("Coffee Cart")
@@ -104,7 +104,7 @@ class ThreeJSTest(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('测试用例说明')
+    @pytest.mark.description('验证从购物车移除商品的功能')
     def test_remove_added_coffee(self):
         self.open("https://seleniumbase.io/coffee/")
         self.assert_title("Coffee Cart")

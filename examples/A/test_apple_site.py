@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class AppleTest(BaseCase):
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test Apple Developer site WebDriver instructions page elements and links')
+    @pytest.mark.description('验证 Apple 开发者网站的 WebDriver 相关文档页面')
     def test_apple_developer_site_webdriver_instructions(self):
         if self.headed:
             self.demo_mode = True

@@ -10,7 +10,7 @@ class DeferredAssertTests(BaseCase):
     @pytest.mark.expected_failure
     @pytest.mark.owner('sunfang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test SeleniumBase deferred assertions collect all failures before raising')
+    @pytest.mark.description('验证延迟断言收集多个断言结果的功能')
     def test_deferred_asserts(self):
         self.open("https://xkcd.com/993/")
         self.wait_for_element("#comic")

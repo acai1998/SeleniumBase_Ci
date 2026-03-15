@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class TestSimpleLogin(BaseCase):
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test simple login flow: enter credentials, submit form, verify successful authentication')
+    @pytest.mark.description('验证简单登录流程（输入凭证、提交、验证成功）')
     def test_simple_login(self):
         self.open("seleniumbase.io/simple/login")
         self.type("#username", "demo_user")

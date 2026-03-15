@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class CalculatorTest(BaseCase):
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test SeleniumBase Calculator App arithmetic: verify 6 * 7 + 12 = 54')
+    @pytest.mark.description('验证计算器计算 6 * 7 + 12 = 54 的正确性')
     def test_6_times_7_plus_12_equals_54(self):
         self.open("seleniumbase.io/apps/calculator")
         self.click('button[id="6"]')

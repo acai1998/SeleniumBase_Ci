@@ -9,7 +9,7 @@ BaseCase.main(__name__, __file__)
 class ContainsSelectorTests(BaseCase):
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test CSS :contains selector for matching elements by text content')
+    @pytest.mark.description('验证 CSS 包含选择器的正确工作')
     def test_contains_selector(self):
         self.open("https://xkcd.com/2207/")
         self.assert_element('div.box div:contains("Math Work")')

@@ -17,7 +17,7 @@ class SwagLabsTest(BaseCase):
 
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test basic Swag Labs functional flow from login through product selection to checkout completion')
+    @pytest.mark.description('验证 Swag Labs 完整购物流程（登录到结账）')
     def test_swag_labs_basic_flow(self):
         """This test checks functional flow of the Swag Labs store."""
         self.login_to_swag_labs(username="standard_user")

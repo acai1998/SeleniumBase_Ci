@@ -18,7 +18,7 @@ class TestGeolocation(BaseCase):
 
     @pytest.mark.owner('wubin')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test browser geolocation API override and verify location-based page behavior')
+    @pytest.mark.description('验证地理位置信息获取功能')
     def test_geolocation(self):
         self.open("about:blank")
         if self._multithreaded:

@@ -21,7 +21,7 @@ class ShadowDomTest(BaseCase):
 
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test interacting with elements inside Shadow DOM encapsulated components')
+    @pytest.mark.description('验证访问和操作 Shadow DOM 中的元素')
     def test_shadow_dom(self):
         if not self.browser == "chrome" or self.headless or self.recorder_mode:
             self.open_if_not_url("about:blank")

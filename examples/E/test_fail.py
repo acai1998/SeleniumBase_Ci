@@ -12,7 +12,7 @@ class FailingTests(BaseCase):
     @pytest.mark.expected_failure
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test expected failure: army of robots not found on XKCD desert island comic')
+    @pytest.mark.description('验证在 XKCD 漫画中查找机器人相关内容')
     def test_find_army_of_robots_on_xkcd_desert_island(self):
         self.open("https://xkcd.com/731/")
         print("\n(This test should fail)")

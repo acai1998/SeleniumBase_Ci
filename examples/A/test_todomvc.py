@@ -17,7 +17,7 @@ class TodoMVC(BaseCase):
     @parameterized.expand([["jquery"], ["react"], ["vue"]])
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test TodoMVC app with jQuery, React and Vue frameworks: add and verify todo items')
+    @pytest.mark.description('验证 TodoMVC 应用跨框架（jQuery、React、Vue）的 todo 功能')
     def test_todomvc(self, framework):
         self.open("https://todomvc.com/")
         self.clear_local_storage()

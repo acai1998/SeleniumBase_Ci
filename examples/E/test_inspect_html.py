@@ -9,7 +9,7 @@ BaseCase.main(__name__, __file__)
 class HtmlInspectorTests(BaseCase):
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test SeleniumBase HTML inspector utility for parsing and analyzing DOM structure')
+    @pytest.mark.description('验证 HTML 页面检查和分析功能')
     def test_html_inspector(self):
         self.open("https://xkcd.com/1144/")
         self.inspect_html()

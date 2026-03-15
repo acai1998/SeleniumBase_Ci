@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class DragAndDropTests(BaseCase):
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test HTML5 drag and drop functionality between source and target elements')
+    @pytest.mark.description('验证拖拽元素到目标位置的操作')
     def test_drag_and_drop(self):
         self.open("https://seleniumbase.io/other/drag_and_drop")
         self.assert_element_not_visible("#div1 img#drag1")

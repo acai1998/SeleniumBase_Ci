@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class URLTestClass(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test URL and title assertion methods: assert_url, assert_url_contains, assert_title_contains')
+    @pytest.mark.description('验证 URL 和页面标题的各种断言方法')
     def test_url_asserts(self):
         self.open("https://seleniumbase.io/help_docs/how_it_works/")
         self.assert_url("https://seleniumbase.io/help_docs/how_it_works/")

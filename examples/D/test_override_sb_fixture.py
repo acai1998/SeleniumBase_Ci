@@ -68,8 +68,8 @@ def sb(request):
 
 @pytest.mark.owner('zhangsan')
 @pytest.mark.priority('P3')
-@pytest.mark.description('Test override fixture no class')
-def test_override_fixture_no_class(sb):
+@pytest.mark.description('验证在顶层函数中覆盖 SeleniumBase fixture')
+    def test_override_fixture_no_class(sb):
     sb.open("https://seleniumbase.io/demo_page")
     sb.type("#myTextInput", "This is Automated")
     sb.set_value("input#mySlider", "100")
@@ -82,7 +82,7 @@ def test_override_fixture_no_class(sb):
 class TestOverride:
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test override fixture inside class')
+    @pytest.mark.description('验证在测试类中覆盖 SeleniumBase fixture')
     def test_override_fixture_inside_class(self, sb):
         sb.open("https://seleniumbase.io/demo_page")
         sb.type("#myTextInput", "This is Automated")

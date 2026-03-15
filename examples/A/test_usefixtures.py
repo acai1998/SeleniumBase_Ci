@@ -5,7 +5,7 @@ import pytest
 class Test_UseFixtures:
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test applying pytest usefixtures decorator to an entire test class')
+    @pytest.mark.description('验证 pytest usefixtures 装饰器在整个类上的应用')
     def test_usefixtures_on_class(self):
         if not hasattr(self, "sb"):
             print("This test is for pytest only!")

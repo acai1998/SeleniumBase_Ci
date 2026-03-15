@@ -7,7 +7,7 @@ class AngularMaterialInputTests(BaseCase):
 
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Angular Material input: entering invalid email shows validation error message')
+    @pytest.mark.description('验证输入框拒绝无效输入的功能')
     def test_invalid_input(self):
         # Test that there's an error for an invalid input
         self.open("https://material.angular.io/components/input/examples")
@@ -16,7 +16,7 @@ class AngularMaterialInputTests(BaseCase):
 
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Angular Material input: valid email address does not trigger validation error')
+    @pytest.mark.description('验证输入框接受有效邮箱地址')
     def test_valid_email_input(self):
         self.open("https://material.angular.io/components/input/examples")
         email_input = 'input[type="email"]'
@@ -26,7 +26,7 @@ class AngularMaterialInputTests(BaseCase):
 
     @pytest.mark.owner('zhaoliu')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test Angular Material input: clearing the field resets value to empty string')
+    @pytest.mark.description('验证清空输入框内容的功能')
     def test_clear_input(self):
         self.open("https://material.angular.io/components/input/examples")
         email_input = 'input[type="email"]'

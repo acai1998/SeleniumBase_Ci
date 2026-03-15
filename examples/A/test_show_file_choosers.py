@@ -9,7 +9,7 @@ BaseCase.main(__name__, __file__)
 class TestsFileUpload(BaseCase):
     @pytest.mark.owner('caijinwei')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test file chooser dialog appears and can be interacted with')
+    @pytest.mark.description('验证文件选择对话框的显示和交互')
     def test_show_file_choosers(self):
         self.open("https://seleniumbase.io/apps/img_upload")
         self.wait_for_element('img[alt="ImgBB"]')

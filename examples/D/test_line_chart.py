@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyChartMakerClass(BaseCase):
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test SeleniumBase line chart generation with multiple data points')
+    @pytest.mark.description('验证折线图表的绘制和显示')
     def test_line_chart(self):
         self.create_presentation()
         self.create_line_chart(

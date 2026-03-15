@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class LocaleTests(BaseCase):
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test retrieving browser locale code and verifying it matches expected value')
+    @pytest.mark.description('验证获取本地化语言代码的功能')
     def test_get_locale_code(self):
         self.open("about:blank")
         locale_code = self.get_locale_code()

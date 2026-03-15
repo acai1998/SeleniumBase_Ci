@@ -10,7 +10,7 @@ BaseCase.main(__name__, __file__)
 class HackingTests(BaseCase):
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test search functionality on Hacker News website with keyword verification')
+    @pytest.mark.description('验证 Hacker News 搜索功能')
     def test_hack_search(self):
         if self.headless:
             self.open_if_not_url("about:blank")

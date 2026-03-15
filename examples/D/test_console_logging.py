@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class TestConsoleLogging(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test browser console log capture and assert log messages are correctly recorded')
+    @pytest.mark.description('验证浏览器控制台日志记录功能')
     def test_console_logging(self):
         self.open("https://seleniumbase.io/demo_page")
         self.wait_for_element_visible("h2")

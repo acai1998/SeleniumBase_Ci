@@ -27,7 +27,7 @@ class OverrideDriverTest(BaseCase):
 
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test driver override')
+    @pytest.mark.description('验证覆盖默认 WebDriver 的功能')
     def test_driver_override(self):
         self.open("https://seleniumbase.io/demo_page")
         self.type("#myTextInput", "This is Automated")

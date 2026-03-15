@@ -6,7 +6,7 @@ BaseCase.main(__name__, __file__)
 class MyTestClass(BaseCase):
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P0')
-    @pytest.mark.description('Test swag labs')
+    @pytest.mark.description('验证 Swag Labs 商品页面数据获取')
     def test_swag_labs(self):
         self.open("https://www.saucedemo.com")
         self.type("#user-name", "standard_user")

@@ -22,7 +22,7 @@ class ImageTests(BaseCase):
     # @pytest.mark.run(order=1)
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test 1 save element as image file')
+    @pytest.mark.description('验证将页面元素保存为图片文件')
     def test_1_save_element_as_image_file(self):
         """Pull an image from a website and save it as a PNG file."""
         self.open("https://xkcd.com/1117/")
@@ -37,7 +37,7 @@ class ImageTests(BaseCase):
     # @pytest.mark.run(order=2)
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test 2 add text overlay to image')
+    @pytest.mark.description('验证在图片上添加文字覆盖层')
     def test_2_add_text_overlay_to_image(self):
         """Add a text overlay to an image."""
         self.open("https://xkcd.com/1117/")
@@ -55,7 +55,7 @@ class ImageTests(BaseCase):
     # @pytest.mark.run(order=3)
     @pytest.mark.owner('lisi')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test 3 add text overlay to page section')
+    @pytest.mark.description('验证在页面部分区域添加文字覆盖')
     def test_3_add_text_overlay_to_page_section(self):
         """Add a text overlay to a section of a page."""
         self.open("https://xkcd.com/2200/")
@@ -78,7 +78,7 @@ class ImageTests(BaseCase):
     # @pytest.mark.run(order=4)
     @pytest.mark.owner('zhouqiang')
     @pytest.mark.priority('P3')
-    @pytest.mark.description('Test 4 add text overlay to full page')
+    @pytest.mark.description('验证在全页面添加文字覆盖效果')
     def test_4_add_text_overlay_to_full_page(self):
         """Add a text overlay to a full page."""
         self.open("https://xkcd.com/1922/")

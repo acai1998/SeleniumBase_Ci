@@ -7,7 +7,7 @@ BaseCase.main(__name__, __file__)
 class GetCoffeeTest(BaseCase):
     @pytest.mark.owner('wangwu')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test Coffee Cart product list: verify coffee items are loaded and displayed')
+    @pytest.mark.description('验证获取咖啡商品信息的 API')
     def test_get_coffee(self):
         self.open("https://seleniumbase.io/coffee/")
         self.assert_title("Coffee Cart")
