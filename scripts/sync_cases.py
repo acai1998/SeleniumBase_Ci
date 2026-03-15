@@ -212,8 +212,8 @@ def parse_test_files(test_dir=None, modified_files=None):
         # 推断用例类型
         case_type = 'ui' if 'ui' in rel_path.lower() else 'api'
 
-        # 匹配 class TestXxx 和 def test_xxx
-        class_pattern = r'class\s+(Test\w+)\s*(?:\([^)]*\))?\s*:'
+        # 匹配所有类（不限 Test 前缀，兼容 MyTestSuite、SwagLabsTests 等各种命名）和 def test_xxx
+        class_pattern = r'class\s+(\w+)\s*(?:\([^)]*\))?\s*:'
         method_pattern = r'def\s+(test_\w+)\s*\([^)]*\)'
 
         # 解析类和方法
