@@ -39,7 +39,7 @@ class CanvasTest(BaseCase):
 
     @pytest.mark.owner('liuyang')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test clicking HTML5 canvas element with custom x/y offset coordinates')
+    @pytest.mark.description('验证从 Canvas 中心位置的点击操作')
     def test_click_with_offset(self):
         self.open("https://seleniumbase.io/canvas/")
         if self.undetectable:

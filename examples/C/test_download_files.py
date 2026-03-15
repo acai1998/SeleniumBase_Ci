@@ -30,7 +30,7 @@ class DownloadTests(BaseCase):
 
     @pytest.mark.owner('zhangsan')
     @pytest.mark.priority('P1')
-    @pytest.mark.description('Test downloading Python package distribution files from PyPI')
+    @pytest.mark.description('验证从 PyPI 下载 Python 包文件')
     def test_download_files_from_pypi(self):
         self.open("https://pypi.org/project/sbvirtualdisplay/#files")
         self.assert_element("span#pip-command")

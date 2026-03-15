@@ -36,7 +36,7 @@ class TestsMyTestSuite(BaseCase):
     @pytest.mark.expected_failure
     @pytest.mark.owner('chenmei')
     @pytest.mark.priority('P2')
-    @pytest.mark.description('Test suite case 4: verify demo page element visibility state')
+    @pytest.mark.description('验证套件用例 4：验证演示页面元素可见性状态')
     def test_4(self):
         print("\n(This test should fail)")
         self.open("https://xkcd.com/2224/")

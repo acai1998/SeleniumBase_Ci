@@ -235,7 +235,7 @@ def parse_test_files(test_dir=None, modified_files=None):
                 meta = extract_metadata(content, method_name, method_start)
 
                 cases.append({
-                    'name': f'{class_name}::{method_name}',
+                    'name': method_name,
                     'module': class_name,
                     'type': case_type,
                     'priority': meta['priority'],
