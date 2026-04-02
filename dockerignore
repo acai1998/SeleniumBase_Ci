@@ -1,6 +1,7 @@
 # Python 缓存
 __pycache__/
 *.pyc
+*.pyo
 
 # 日志与临时文件
 *.log
@@ -17,5 +18,17 @@ __pycache__/
 # 测试报告目录
 reports/
 temp/
+latest_logs/
+
+# ── 测试代码目录（镜像只打包运行环境，代码在运行时 git clone）────────────────
+examples/
+scripts/
+
+# 其他不需要进镜像的文件
+Jenkinsfile
+*.md
+*.bat
+run_tests.sh
+environment.yml
 
 
