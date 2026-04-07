@@ -20,7 +20,9 @@
 #   REPO_BRANCH   仓库分支，默认 master
 #   SCRIPT_PATHS  逗号分隔的脚本路径（如 examples/E/test_x.py,examples/A/test_y.py）
 #   MARKER        pytest marker（如 smoke），与 SCRIPT_PATHS 互斥，SCRIPT_PATHS 优先
-#   CALLBACK_URL  回调完整地址，默认 ${PLATFORM_URL}/api/jenkins/callback
+#   CALLBACK_URL       回调完整地址，默认 ${PLATFORM_URL}/api/jenkins/callback
+#   PARALLEL_WORKERS   并发进程数（0/false=串行，auto=按CPU核数，N=指定N个进程）
+#                      依赖 pytest-xdist；未设置时默认串行
 # =============================================================================
 
 set -eo pipefail
@@ -52,7 +54,8 @@ echo "  REPO_URL     : ${REPO_URL:-（未指定，使用当前目录）}"
 echo "  REPO_BRANCH  : ${REPO_BRANCH}"
 echo "  SCRIPT_PATHS : ${SCRIPT_PATHS:-（未指定）}"
 echo "  MARKER       : ${MARKER:-（未指定）}"
-echo "  CALLBACK_URL : ${CALLBACK_URL}"
+echo "  CALLBACK_URL      : ${CALLBACK_URL}"
+echo "  PARALLEL_WORKERS  : ${PARALLEL_WORKERS:-（未设置，默认串行）}"
 echo "══════════════════════════════════════════════════════"
 
 # ── 1. 标记执行开始 ───────────────────────────────────────────────────────────
@@ -85,12 +88,20 @@ echo "  工作目录: $(pwd)"
 echo ""
 echo "▶ [3/5] 安装仓库依赖..."
 if [ -f "requirements.txt" ]; then
-    echo "  安装 requirements.txt..."
-    pip install --no-cache-dir -q \
-        -i https://mirrors.aliyun.com/pypi/simple/ \
-        --trusted-host mirrors.aliyun.com \
-        -r requirements.txt
-    echo "  ✅ 依赖安装完成"
+    # 计算 requirements.txt 的 MD5，与镜像预装时的哈希比对
+    # 若镜像内已预装相同内容（/opt/preinstalled_req.md5），则跳过安装，节省 2~5 分钟
+    REQ_MD5=$(md5sum requirements.txt | cut -d' ' -f1)
+    PREINSTALLED_MD5_FILE="/opt/preinstalled_req.md5"
+    if [ -f "${PREINSTALLED_MD5_FILE}" ] && [ "$(cat ${PREINSTALLED_MD5_FILE})" = "${REQ_MD5}" ]; then
+        echo "  ✅ requirements.txt 与镜像预装版本一致（MD5: ${REQ_MD5}），跳过 pip install"
+    else
+        echo "  安装 requirements.txt（MD5: ${REQ_MD5}，镜像预装版本不匹配或不存在）..."
+        pip install --no-cache-dir -q \
+            -i https://mirrors.aliyun.com/pypi/simple/ \
+            --trusted-host mirrors.aliyun.com \
+            -r requirements.txt
+        echo "  ✅ 依赖安装完成"
+    fi
 else
     echo "  ℹ 未找到 requirements.txt，跳过"
 fi
@@ -110,6 +121,21 @@ echo "▶ [4/5] 执行测试..."
 # （pytest.ini 已在仓库根，让 pytest 自动读取配置）
 
 PYTEST_CMD="pytest"
+
+# ── 并行执行参数（pytest-xdist） ──────────────────────────────────────────────
+# PARALLEL_WORKERS 取值说明：
+#   未设置 / "0" / "false" → 不追加 -n，保持串行
+#   "auto"                 → -n auto（按 CPU 核数自动分配，UI 测试建议用固定值）
+#   数字（如 "4"）          → -n 4（固定 4 个并发进程）
+# ⚠️  注意：SeleniumBase UI 测试使用 xdist 时，每个 worker 会独立启动一个 Chrome 进程
+#   请确保节点内存充足（每个 Chrome 约消耗 300~500MB），建议最多不超过 CPU 核数
+WORKERS="${PARALLEL_WORKERS:-0}"
+if [ "${WORKERS}" != "0" ] && [ "${WORKERS}" != "false" ] && [ -n "${WORKERS}" ]; then
+    PYTEST_CMD="${PYTEST_CMD} -n ${WORKERS}"
+    echo "  并行模式: -n ${WORKERS}"
+else
+    echo "  串行模式（PARALLEL_WORKERS 未设置或为 0）"
+fi
 
 if [ -n "${SCRIPT_PATHS}" ]; then
     # 将逗号分隔的路径转换为空格分隔，传给 pytest
@@ -169,8 +195,97 @@ echo "▶ [5/5] 回调平台..."
 END_MS=$(date +%s%3N)
 DURATION_MS=$(( END_MS - START_MS ))
 
-PAYLOAD="{\"runId\":${RUN_ID},\"status\":\"${BUILD_STATUS}\",\"durationMs\":${DURATION_MS}}"
-echo "  payload: ${PAYLOAD}"
+# ── 解析 test-report.json，构造含每条 case 结果的完整 payload ─────────────────
+# 平台通过 results 数组更新每条用例的真实状态（passed/failed/skipped）
+# 若只传 status 而不传 results，平台会将所有用例标为 failed/error
+PAYLOAD=""
+if [ -f "${REPORT_FILE}" ]; then
+    echo "  解析 test-report.json，提取每条 case 结果..."
+    # 用 Python（镜像内已有）解析 JSON 并构造回调 payload
+    PAYLOAD=$(python3 - <<PYEOF
+import json, sys
+
+try:
+    with open("${REPORT_FILE}", "r", encoding="utf-8") as f:
+        report = json.load(f)
+except Exception as e:
+    sys.stderr.write(f"Failed to read report: {e}\n")
+    sys.exit(1)
+
+summary = report.get("summary", {})
+passed  = summary.get("passed", 0)
+failed  = (summary.get("failed", 0) + summary.get("error", 0))
+skipped = summary.get("skipped", 0)
+total   = summary.get("total", passed + failed + skipped)
+
+# 整体状态：有 failed/error 就是 failed，全部通过才是 success
+overall_status = "success" if failed == 0 and total > 0 else "failed"
+
+results = []
+for t in report.get("tests", []):
+    outcome = str(t.get("outcome", "error")).lower()
+    if outcome in ("passed",):
+        status = "passed"
+    elif outcome in ("failed", "error"):
+        status = "failed"
+    elif outcome in ("skipped",):
+        status = "skipped"
+    else:
+        status = "error"
+
+    node_id = str(t.get("nodeid", ""))
+    duration_ms = int(round(float(t.get("duration", 0)) * 1000))
+
+    # 提取错误信息（longrepr 可能是字符串或对象）
+    longrepr = t.get("longrepr", None)
+    error_msg = None
+    if isinstance(longrepr, str) and longrepr.strip():
+        error_msg = longrepr.strip()[:2000]
+    elif isinstance(longrepr, dict):
+        reprcrash = longrepr.get("reprcrash", {})
+        if isinstance(reprcrash, dict):
+            error_msg = reprcrash.get("message", "")[:2000]
+
+    entry = {
+        "caseId": 0,
+        "caseName": node_id,
+        "status": status,
+        "duration": duration_ms,
+    }
+    if error_msg:
+        entry["errorMessage"] = error_msg
+
+    results.append(entry)
+
+payload = {
+    "runId": ${RUN_ID},
+    "status": overall_status,
+    "passedCases": passed,
+    "failedCases": failed,
+    "skippedCases": skipped,
+    "durationMs": ${DURATION_MS},
+    "results": results,
+}
+
+print(json.dumps(payload, ensure_ascii=False))
+PYEOF
+)
+    if [ $? -ne 0 ] || [ -z "${PAYLOAD}" ]; then
+        echo "  ⚠ test-report.json 解析失败，降级为仅传汇总状态"
+        PAYLOAD="{\"runId\":${RUN_ID},\"status\":\"${BUILD_STATUS}\",\"durationMs\":${DURATION_MS}}"
+    else
+        # 从解析结果中提取统计数以打印日志
+        PARSED_PASSED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('passed',0))" 2>/dev/null || echo "?")
+        PARSED_FAILED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('failed',0)+s.get('error',0))" 2>/dev/null || echo "?")
+        PARSED_SKIPPED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('skipped',0))" 2>/dev/null || echo "?")
+        echo "  ✅ 解析完成: passed=${PARSED_PASSED} failed=${PARSED_FAILED} skipped=${PARSED_SKIPPED}"
+    fi
+else
+    echo "  ⚠ 未找到 ${REPORT_FILE}，降级为仅传汇总状态"
+    PAYLOAD="{\"runId\":${RUN_ID},\"status\":\"${BUILD_STATUS}\",\"durationMs\":${DURATION_MS}}"
+fi
+
+echo "  payload 长度: ${#PAYLOAD} 字节"
 
 CALLBACK_OK=0
 for attempt in 1 2 3; do

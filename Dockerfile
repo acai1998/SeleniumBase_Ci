@@ -81,6 +81,20 @@ RUN pip install --no-cache-dir \
     -r /tmp/requirements-runner.txt && \
     rm -f /tmp/requirements-runner.txt
 
+# ── 4b. 预装测试仓库常用依赖（requirements.txt），并记录 MD5 ──────────────────
+# entrypoint.sh 运行时若 requirements.txt 的 MD5 与此处一致，则跳过 pip install
+# 节省每次容器启动时 2~5 分钟的重复安装时间
+# 更新频率低的依赖直接在此处预装；若测试仓库 requirements.txt 频繁变动，
+# 可删除此 COPY/RUN 块并重新 build 镜像
+COPY requirements.txt /opt/preinstalled_req.txt
+RUN pip install --no-cache-dir \
+    -i https://mirrors.aliyun.com/pypi/simple/ \
+    --trusted-host mirrors.aliyun.com \
+    -r /opt/preinstalled_req.txt && \
+    # 写入 MD5 标记，entrypoint.sh 比对此文件决定是否跳过 pip install
+    md5sum /opt/preinstalled_req.txt | cut -d' ' -f1 > /opt/preinstalled_req.md5 && \
+    echo "预装依赖 MD5: $(cat /opt/preinstalled_req.md5)"
+
 # ── 5. 把 ChromeDriver 同步到 SeleniumBase 驱动目录，防止运行时走外网下载 ──────
 RUN python - <<'PY'
 import os, shutil, seleniumbase
