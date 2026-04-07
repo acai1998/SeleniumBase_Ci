@@ -2,97 +2,95 @@
 # CNB CI 配置 - 自动构建并推送测试执行镜像
 # =============================================================================
 # 触发时机：
-#   - push 到 master 分支（正式镜像）
-#   - push 到 develop 分支（测试构建，不推 latest tag）
-#   - 手动触发
+#   - push 到 master 分支 → 构建并推送镜像（latest + commit-sha 两个 tag）
+#   - push 到 develop / feature/* 分支 → 仅构建验证，不推送
 #
-# 产出镜像：
-#   docker.cnb.cool/imacaiy/test-runner:latest
-#   docker.cnb.cool/imacaiy/test-runner:<commit-short-sha>
+# 产出镜像（master 分支）：
+#   ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
+#   ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:<commit-short-sha>
 # =============================================================================
 
-version: "1.0"
+# ── master 分支：构建并推送镜像 ──────────────────────────────────────────────
+master:
+  push:
+    - name: build-and-push
+      services:
+        - docker  # 声明后流水线内可直接使用 docker 命令，且内置了 CNB 制品库凭据
+      stages:
+        - name: 设置镜像 Tag
+          script: |
+            IMAGE="${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}"
+            echo "构建镜像: ${IMAGE}:latest 和 ${IMAGE}:${CNB_COMMIT_SHORT}"
+            echo -n "${IMAGE}"
+          exports:
+            info: IMAGE_BASE
 
-flows:
-  # ── 构建并推送镜像（master 分支触发）─────────────────────────────────────
-  build-and-push:
-    on:
-      push:
-        branches:
-          - master
-    jobs:
-      build:
-        runs-on: ubuntu
-        steps:
-          - name: 检出代码
-            uses: checkout
+        - name: 构建镜像
+          script: |
+            docker build \
+              --no-cache \
+              --label "build.sha=${CNB_COMMIT_SHORT}" \
+              --label "build.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              --label "build.branch=${CNB_BRANCH}" \
+              -t "${IMAGE_BASE}:${CNB_COMMIT_SHORT}" \
+              -t "${IMAGE_BASE}:latest" \
+              .
 
-          - name: 登录 CNB 镜像仓库
-            run: echo "$CNB_TOKEN" | docker login docker.cnb.cool -u cnb --password-stdin
-            env:
-              CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+        - name: 验证镜像（smoke test）
+          script: |
+            echo "── Chrome 版本 ──"
+            docker run --rm --entrypoint google-chrome "${IMAGE_BASE}:latest" --version
+            echo "── ChromeDriver 版本 ──"
+            docker run --rm --entrypoint chromedriver "${IMAGE_BASE}:latest" --version
+            echo "── pytest 版本 ──"
+            docker run --rm --entrypoint pytest "${IMAGE_BASE}:latest" --version
+            echo "✅ smoke test 通过"
 
-          - name: 构建镜像
-            run: |
-              IMAGE=docker.cnb.cool/imacaiy/test-runner
-              SHA=${CNB_COMMIT_SHORT_SHA:-$(git rev-parse --short HEAD)}
-              echo "构建镜像: ${IMAGE}:${SHA} 和 ${IMAGE}:latest"
-              docker build \
-                --no-cache \
-                --label "build.sha=${SHA}" \
-                --label "build.date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-                -t "${IMAGE}:${SHA}" \
-                -t "${IMAGE}:latest" \
-                .
+        - name: 推送镜像
+          script: |
+            docker push "${IMAGE_BASE}:${CNB_COMMIT_SHORT}"
+            docker push "${IMAGE_BASE}:latest"
+            echo "✅ 镜像推送成功"
+            echo "  ${IMAGE_BASE}:${CNB_COMMIT_SHORT}"
+            echo "  ${IMAGE_BASE}:latest"
 
-          - name: 验证镜像（smoke test）
-            run: |
-              IMAGE=docker.cnb.cool/imacaiy/test-runner
-              echo "验证 Chrome 版本..."
-              docker run --rm --entrypoint google-chrome "${IMAGE}:latest" --version
-              echo "验证 ChromeDriver 版本..."
-              docker run --rm --entrypoint chromedriver "${IMAGE}:latest" --version
-              echo "验证 pytest 版本..."
-              docker run --rm --entrypoint pytest "${IMAGE}:latest" --version
+# ── develop / feature/* 分支：仅构建验证，不推送 ────────────────────────────
+develop:
+  push:
+    - name: build-only
+      services:
+        - docker
+      stages:
+        - name: 构建镜像（验证 Dockerfile 可用）
+          script: |
+            docker build \
+              --no-cache \
+              -t test-runner:ci-check \
+              .
 
-          - name: 推送镜像
-            run: |
-              IMAGE=docker.cnb.cool/imacaiy/test-runner
-              SHA=${CNB_COMMIT_SHORT_SHA:-$(git rev-parse --short HEAD)}
-              docker push "${IMAGE}:${SHA}"
-              docker push "${IMAGE}:latest"
-              echo "✅ 镜像推送成功"
-              echo "  ${IMAGE}:${SHA}"
-              echo "  ${IMAGE}:latest"
+        - name: 验证镜像
+          script: |
+            docker run --rm --entrypoint google-chrome test-runner:ci-check --version
+            docker run --rm --entrypoint chromedriver test-runner:ci-check --version
+            docker run --rm --entrypoint pytest test-runner:ci-check --version
+            echo "✅ 镜像验证通过（不推送）"
 
-          - name: 退出登录
-            if: always
-            run: docker logout docker.cnb.cool || true
+"feature/*":
+  push:
+    - name: build-only
+      services:
+        - docker
+      stages:
+        - name: 构建镜像（验证 Dockerfile 可用）
+          script: |
+            docker build \
+              --no-cache \
+              -t test-runner:ci-check \
+              .
 
-  # ── PR / develop 分支：仅构建验证，不推送 ────────────────────────────────
-  build-only:
-    on:
-      push:
-        branches:
-          - develop
-          - "feature/*"
-    jobs:
-      build:
-        runs-on: ubuntu
-        steps:
-          - name: 检出代码
-            uses: checkout
-
-          - name: 构建镜像（验证 Dockerfile 可用）
-            run: |
-              docker build \
-                --no-cache \
-                -t test-runner:ci-check \
-                .
-
-          - name: 验证镜像
-            run: |
-              docker run --rm --entrypoint google-chrome test-runner:ci-check --version
-              docker run --rm --entrypoint chromedriver test-runner:ci-check --version
-              docker run --rm --entrypoint pytest test-runner:ci-check --version
-              echo "✅ 镜像验证通过（不推送）"
+        - name: 验证镜像
+          script: |
+            docker run --rm --entrypoint google-chrome test-runner:ci-check --version
+            docker run --rm --entrypoint chromedriver test-runner:ci-check --version
+            docker run --rm --entrypoint pytest test-runner:ci-check --version
+            echo "✅ 镜像验证通过（不推送）"

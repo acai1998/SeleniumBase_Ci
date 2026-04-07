@@ -35,6 +35,11 @@ if [ -z "${RUN_ID}" ]; then
     echo "❌ 必须传入环境变量 RUN_ID" >&2
     exit 1
 fi
+# RUN_ID 必须是纯整数，防止注入 Python/JSON 源码
+if ! echo "${RUN_ID}" | grep -qE '^[0-9]+$'; then
+    echo "❌ RUN_ID 格式错误（必须为纯整数，当前值: '${RUN_ID}'）" >&2
+    exit 1
+fi
 if [ -z "${PLATFORM_URL}" ]; then
     echo "❌ 必须传入环境变量 PLATFORM_URL" >&2
     exit 1
@@ -220,8 +225,16 @@ failed  = (summary.get("failed", 0) + summary.get("error", 0))
 skipped = summary.get("skipped", 0)
 total   = summary.get("total", passed + failed + skipped)
 
-# 整体状态：有 failed/error 就是 failed，全部通过才是 success
-overall_status = "success" if failed == 0 and total > 0 else "failed"
+# 整体状态判断：
+#   total=0 → error（未收集到任何用例，可能是路径错误或环境问题）
+#   failed>0 → failed
+#   全部通过  → success
+if total == 0:
+    overall_status = "error"
+elif failed == 0:
+    overall_status = "success"
+else:
+    overall_status = "failed"
 
 results = []
 for t in report.get("tests", []):
@@ -278,11 +291,16 @@ PYEOF
         echo "  ⚠ test-report.json 解析失败，降级为仅传汇总状态"
         PAYLOAD="{\"runId\":${RUN_ID},\"status\":\"${BUILD_STATUS}\",\"durationMs\":${DURATION_MS}}"
     else
-        # 从解析结果中提取统计数以打印日志
-        PARSED_PASSED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('passed',0))" 2>/dev/null || echo "?")
-        PARSED_FAILED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('failed',0)+s.get('error',0))" 2>/dev/null || echo "?")
-        PARSED_SKIPPED=$(python3 -c "import json,sys; d=json.loads(open('${REPORT_FILE}').read()); s=d.get('summary',{}); print(s.get('skipped',0))" 2>/dev/null || echo "?")
-        echo "  ✅ 解析完成: passed=${PARSED_PASSED} failed=${PARSED_FAILED} skipped=${PARSED_SKIPPED}"
+        # 一次 Python 调用提取全部统计数，避免三次启动进程
+        read -r PARSED_PASSED PARSED_FAILED PARSED_TOTAL <<< "$(python3 -c "
+import json, sys
+try:
+    d = json.loads(sys.stdin.read())
+    print(d.get('passedCases',0), d.get('failedCases',0), len(d.get('results',[])))
+except Exception:
+    print('? ? ?')
+" <<< "${PAYLOAD}" 2>/dev/null || echo '? ? ?')"
+        echo "  ✅ 解析完成: passed=${PARSED_PASSED} failed=${PARSED_FAILED} total=${PARSED_TOTAL}"
     fi
 else
     echo "  ⚠ 未找到 ${REPORT_FILE}，降级为仅传汇总状态"
@@ -290,6 +308,10 @@ else
 fi
 
 echo "  payload 长度: ${#PAYLOAD} 字节"
+
+# 将 payload 写入临时文件，避免 shell 展开时对 JSON 中特殊字符（$、`、! 等）的误处理
+PAYLOAD_FILE="/tmp/cb_payload_${RUN_ID}.json"
+printf '%s' "${PAYLOAD}" > "${PAYLOAD_FILE}"
 
 CALLBACK_OK=0
 for attempt in 1 2 3; do
@@ -301,7 +323,7 @@ for attempt in 1 2 3; do
         --connect-timeout 10 \
         --max-time 30 \
         -k \
-        -d "${PAYLOAD}" \
+        --data-binary "@${PAYLOAD_FILE}" \
     )
     CURL_EXIT=$?
     RESPONSE_BODY=$(cat /tmp/cb_response_${attempt}.txt 2>/dev/null || echo "")
@@ -331,6 +353,9 @@ done
 if [ "${CALLBACK_OK}" -ne 1 ]; then
     echo "  ⚠ 回调最终失败，平台将通过轮询兜底同步结果"
 fi
+
+# 清理临时 payload 文件
+rm -f "${PAYLOAD_FILE:-}" /tmp/cb_response_*.txt
 
 echo ""
 echo "══════════════════════════════════════════════════════"
