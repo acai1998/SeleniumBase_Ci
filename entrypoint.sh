@@ -125,7 +125,11 @@ echo "▶ [4/5] 执行测试..."
 # pytest 在仓库根执行时，直接传 examples/E/test_xxx.py 即可，无需 strip 前缀
 # （pytest.ini 已在仓库根，让 pytest 自动读取配置）
 
-PYTEST_CMD="pytest"
+# ── 构造 pytest 命令（Shell 数组，安全处理含空格/特殊字符的路径）────────────
+# 使用数组而非字符串拼接 + eval，避免：
+#   1. 路径含空格时被 Shell 分词成多个参数
+#   2. 路径含 ;、&&、`、$() 等时被 eval 当成 Shell 命令执行
+PYTEST_ARGS=(pytest)
 
 # ── 并行执行参数（pytest-xdist） ──────────────────────────────────────────────
 # PARALLEL_WORKERS 取值说明：
@@ -136,38 +140,37 @@ PYTEST_CMD="pytest"
 #   请确保节点内存充足（每个 Chrome 约消耗 300~500MB），建议最多不超过 CPU 核数
 WORKERS="${PARALLEL_WORKERS:-0}"
 if [ "${WORKERS}" != "0" ] && [ "${WORKERS}" != "false" ] && [ -n "${WORKERS}" ]; then
-    PYTEST_CMD="${PYTEST_CMD} -n ${WORKERS}"
+    PYTEST_ARGS+=(-n "${WORKERS}")
     echo "  并行模式: -n ${WORKERS}"
 else
     echo "  串行模式（PARALLEL_WORKERS 未设置或为 0）"
 fi
 
 if [ -n "${SCRIPT_PATHS}" ]; then
-    # 将逗号分隔的路径转换为空格分隔，传给 pytest
-    # 路径格式：examples/E/test_xxx.py（直接使用，相对于仓库根目录）
-    PATHS_ARGS=""
+    # 将逗号分隔的路径逐一追加为独立参数，每个路径作为一个数组元素
+    # 路径格式：examples/E/test_xxx.py（相对于仓库根目录）
     IFS=',' read -ra RAW_PATHS <<< "${SCRIPT_PATHS}"
     for p in "${RAW_PATHS[@]}"; do
         # 去除首尾空格
         p="${p#"${p%%[![:space:]]*}"}"
         p="${p%"${p##*[![:space:]]}"}"
         if [ -n "$p" ]; then
-            PATHS_ARGS="${PATHS_ARGS} ${p}"
+            PYTEST_ARGS+=("${p}")
         fi
     done
-    PYTEST_CMD="${PYTEST_CMD}${PATHS_ARGS}"
 elif [ -n "${MARKER}" ]; then
-    PYTEST_CMD="${PYTEST_CMD} -m '${MARKER}'"
+    PYTEST_ARGS+=(-m "${MARKER}")
 fi
 
-# 追加报告参数
-PYTEST_CMD="${PYTEST_CMD} \
-    --json-report \
-    --json-report-file=${REPORT_FILE} \
-    --junitxml=${JUNIT_FILE} \
-    -v"
+# 追加报告参数（每个参数独立成数组元素，路径中的特殊字符会被正确处理）
+PYTEST_ARGS+=(
+    --json-report
+    "--json-report-file=${REPORT_FILE}"
+    "--junitxml=${JUNIT_FILE}"
+    -v
+)
 
-echo "  命令: ${PYTEST_CMD}"
+echo "  命令: ${PYTEST_ARGS[*]}"
 echo ""
 
 # 设置 ChromeDriver 路径，防止 SeleniumBase 运行时走外网下载
@@ -175,9 +178,9 @@ export PATH="/usr/local/bin:${PATH}"
 export CHROMEDRIVER=/usr/local/bin/chromedriver
 export SB_DRIVER_CACHE_PATH=/usr/local/bin
 
-# 执行 pytest，捕获退出码（不用 pipefail，需要自己处理）
+# 执行 pytest，捕获退出码（set +e 防止 set -eo 在有失败用例时终止脚本）
 set +e
-eval "${PYTEST_CMD}"
+"${PYTEST_ARGS[@]}"
 PYTEST_EXIT=$?
 set -e
 
