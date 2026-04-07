@@ -202,6 +202,8 @@ PAYLOAD=""
 if [ -f "${REPORT_FILE}" ]; then
     echo "  解析 test-report.json，提取每条 case 结果..."
     # 用 Python（镜像内已有）解析 JSON 并构造回调 payload
+    # set +e 防止 python3 失败时因 pipefail 导致整个脚本退出
+    set +e
     PAYLOAD=$(python3 - <<PYEOF
 import json, sys
 
@@ -270,7 +272,9 @@ payload = {
 print(json.dumps(payload, ensure_ascii=False))
 PYEOF
 )
-    if [ $? -ne 0 ] || [ -z "${PAYLOAD}" ]; then
+    PYTHON_EXIT=$?
+    set -e
+    if [ ${PYTHON_EXIT} -ne 0 ] || [ -z "${PAYLOAD}" ]; then
         echo "  ⚠ test-report.json 解析失败，降级为仅传汇总状态"
         PAYLOAD="{\"runId\":${RUN_ID},\"status\":\"${BUILD_STATUS}\",\"durationMs\":${DURATION_MS}}"
     else
