@@ -77,7 +77,14 @@ echo "▶ [2/5] 准备测试代码..."
 
 REPO_DIR="/workspace/repo"
 
-if [ -n "${REPO_URL}" ]; then
+if [ "${REPO_PRELOADED}" = "true" ] && [ -d "/repo" ]; then
+    # Jenkinsfile 已在宿主机完成 git clone，并通过 -v ${repoDir}:/repo 挂载进容器。
+    # 直接使用已挂载的 /repo，跳过 clone，避免以 root 身份在 /workspace/repo 写入
+    # 从而导致宿主机 jenkins 用户无权清理的权限问题。
+    echo "  ✅ REPO_PRELOADED=true，使用宿主机已挂载的 /repo 目录（跳过 git clone）"
+    REPO_DIR="/repo"
+    cd "${REPO_DIR}"
+elif [ -n "${REPO_URL}" ]; then
     echo "  git clone ${REPO_URL} @ ${REPO_BRANCH}"
     git clone --single-branch --branch "${REPO_BRANCH}" "${REPO_URL}" "${REPO_DIR}"
     cd "${REPO_DIR}"
